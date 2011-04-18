@@ -2,7 +2,7 @@ package com.cniska.gameengine.entity;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import com.cniska.gameengine.CGameEngine;
+import android.view.SurfaceView;
 import com.cniska.gameengine.entity.sprite.CSprite;
 
 /**
@@ -12,34 +12,35 @@ import com.cniska.gameengine.entity.sprite.CSprite;
  */
 public class CEntity
 {
-	protected CGameEngine game;
+	protected SurfaceView view;
+	
 	protected CSprite sprite;
 
 	protected double x;
 	protected double y;
-	protected int vx;
-	protected int vy;
+	protected double vx;
+	protected double vy;
 
 	/**
 	 * Creates the entity.
 	 * @param bitmap the bitmap to represent this unit.
-	 * @param game the game instance.
+	 * @param view the view this entity exists in.
 	 */
-	public CEntity(Bitmap bitmap, CGameEngine game)
+	public CEntity(Bitmap bitmap, SurfaceView view)
 	{
 		this.x = 0;
 		this.y = 0;
 		this.vx = 0;
 		this.vy = 0;
 
-		this.game = game;
+		this.view = view;
 		sprite = new CSprite(bitmap);
 	}
 
 	/**
 	 * Sets the velocity
-	 * @param vx
-	 * @param vy
+	 * @param vx the velocity on the x-axis.
+	 * @param vy the velocity on the y-axis.
 	 */
 	public void setVelocity(int vx, int vy)
 	{
@@ -49,11 +50,10 @@ public class CEntity
 
 	/**
 	 * Updates this entity.
-	 * @param timePassed the time that has passed.
 	 */
-	public void update(long timePassed)
+	public void update()
 	{
-		if ((x + getWidth()) == game.getWidth())
+		if ((x + getWidth()) == view.getWidth())
 		{
 			vx = -1;
 		}
@@ -63,7 +63,7 @@ public class CEntity
 			vx = 1;
 		}
 
-		if ((y + getHeight()) == game.getHeight())
+		if ((y + getHeight()) == view.getHeight())
 		{
 			vy = -1;
 		}
@@ -75,22 +75,22 @@ public class CEntity
 
 		if (vx != 0)
 		{
-			x += vx/* * timePassed*/;
+			x += vx;
 		}
 
 		if (vy != 0)
 		{
-			y += vy/* * timePassed*/;
+			y += vy;
 		}
 	}
 
 	/**
 	 * Renders this entity.
-	 * @param c the canvas.
+	 * @param canvas the canvas.
 	 */
-	public void render(Canvas c)
+	public void render(Canvas canvas)
 	{
-		sprite.render(c, (int) Math.round(x), (int) Math.round(y));
+		sprite.render(canvas, (int) Math.round(x), (int) Math.round(y));
 	}
 
 	/**

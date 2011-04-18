@@ -32,19 +32,18 @@ public class CSprite
 
 	/**
 	 * Updates the sprite.
-	 * @param timePassed the time that has passed.
 	 */
-	public void update(long timePassed)
+	public void update()
 	{
 	}
 
 	/**
 	 * Renders the sprite.
-	 * @param c the canvas.
+	 * @param canvas the canvas.
 	 */
-	public void render(Canvas c, int x, int y)
+	public void render(Canvas canvas, int x, int y)
 	{
-		c.drawBitmap(bitmap, x, y, null);
+		canvas.drawBitmap(bitmap, x, y, null);
 	}
 
 	/**

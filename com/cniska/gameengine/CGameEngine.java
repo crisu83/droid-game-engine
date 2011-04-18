@@ -2,8 +2,12 @@ package com.cniska.gameengine;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+
+import java.text.DecimalFormat;
 
 /**
  * Core game engine class file.
@@ -23,10 +27,27 @@ public abstract class CGameEngine extends SurfaceView implements Runnable
 	private static final int NO_DELAYS_PER_YIELD = 16;
 	private static final int MAX_FRAME_SKIPS = 5;
 
-	private long framesSkipped = 0L;
+	private static final long MAX_STATS_INTERVAL = 1000L; // record stats every second
+	private static final int NUM_FPS = 10; // number of FPS values sorted to get an average
 
-	private long gameStartTime; // when the game was started
-	private long lastUpdateTime; // when the game was last updated
+	private long statsInterval = 0L; // in nanoseconds
+	private long prevStatsTime;
+	private long totalElapsedTime = 0L;
+	private long gameStartTime;
+	protected int timeSpentInGame = 0; // in seconds
+
+	private long framesSkipped = 0L;
+	private long totalFramesSkipped = 0L;
+	private double upsStore[];
+	protected double averageUPS = 0.0;
+
+	private long frameCount = 0;
+	private double fpsStore[];
+	private long statsCount = 0;
+	protected double averageFPS = 0.0;
+
+	//protected DecimalFormat df = new DecimalFormat("0.##"); // 2 decimal precision
+	//protected DecimalFormat timedf = new DecimalFormat("0.####"); // 4 decimal precision
 
 	/**
 	 * Create the game engine.
@@ -38,6 +59,16 @@ public abstract class CGameEngine extends SurfaceView implements Runnable
 		super(context);
 
 		this.period = period;
+
+		// Initialize the timing elements.
+		fpsStore = new double[NUM_FPS];
+		upsStore = new double[NUM_FPS];
+
+		for (int i = 0; i < NUM_FPS; i++)
+		{
+			fpsStore[i] = 0.0;
+			upsStore[i] = 0.0;
+		}
 
 		getHolder().addCallback(
 			new SurfaceHolder.Callback()
@@ -108,6 +139,7 @@ public abstract class CGameEngine extends SurfaceView implements Runnable
 		long excess = 0L;
 
 		gameStartTime = System.nanoTime();
+		prevStatsTime = gameStartTime;
 		beforeTime = gameStartTime;
 
 		running = true;
@@ -157,6 +189,8 @@ public abstract class CGameEngine extends SurfaceView implements Runnable
 			}
 
 			framesSkipped += skips;
+
+			storeStats();
 		}
 	}
 
@@ -168,34 +202,14 @@ public abstract class CGameEngine extends SurfaceView implements Runnable
 		// Make sure that the game is not over.
 		if (!gameOver)
 		{
-			// Get the amount of time passed since the last update
-			// and update the game state.
-			long timePassed = getTimeSinceLastUpdate();
-			gameUpdate(timePassed);
+			gameUpdate();
 		}
-	}
-
-	/**
-	 * Calculates the time that has  passed since the last update.
-	 * @return the time passed in nanoseconds.
-	 */
-	private long getTimeSinceLastUpdate()
-	{
-		long timePassed, timeNow;
-
-		timeNow = System.nanoTime();
-
-		// Calculate the time passed based on when the last previous update time.
-		lastUpdateTime = lastUpdateTime > 0 ? lastUpdateTime : timeNow;
-		timePassed = timeNow - lastUpdateTime;
-		lastUpdateTime = timeNow;
-
-		return timePassed;
 	}
 
 	/**
 	 * Updates the view.
 	 */
+	// TODO: Improve.
 	public void viewUpdate()
 	{
 		Canvas c = null;
@@ -220,20 +234,96 @@ public abstract class CGameEngine extends SurfaceView implements Runnable
 	}
 
 	/**
+	 * Stores the runtime statistics.
+	 */
+	private void storeStats()
+	{
+		frameCount++;
+		statsInterval += period;
+
+		// Make sure we should collect the stats.
+		if (statsInterval >= MAX_STATS_INTERVAL)
+		{
+			long timeNow = System.nanoTime();
+			timeSpentInGame = (int) ((timeNow - gameStartTime) / 1000000000L); // ns -> seconds
+
+			long realElapsedTime = timeNow - prevStatsTime; // time since last stats collection
+			totalElapsedTime += realElapsedTime;
+
+			totalFramesSkipped += framesSkipped;
+
+			// Calculate the latest FPS and UPS.
+			double actualFPS = 0;
+			double actualUPS = 0;
+
+			if (totalElapsedTime > 0)
+			{
+				actualFPS = ((double) frameCount / totalElapsedTime) * 1000000000L; // ns -> seconds
+				actualUPS = ((double) (frameCount + totalFramesSkipped) / totalElapsedTime) * 1000000000L;
+			}
+
+			// Store the latest FPS and UPS.
+			fpsStore[ (int) statsCount % NUM_FPS ] = actualFPS;
+			upsStore[ (int) statsCount % NUM_FPS ] = actualUPS;
+
+			statsCount++;
+
+			double totalFPS = 0.0;
+			double totalUPS = 0.0;
+
+			for( int i=0; i<NUM_FPS; i++ )
+			{
+				totalFPS += fpsStore[i];
+				totalUPS += upsStore[i];
+			}
+
+			if( statsCount<NUM_FPS )
+			{
+				averageFPS = totalFPS / statsCount;
+				averageUPS = totalUPS / statsCount;
+			}
+			else
+			{
+				averageFPS = totalFPS / NUM_FPS;
+				averageUPS = totalUPS / NUM_FPS;
+			}
+
+			framesSkipped = 0;
+			prevStatsTime = timeNow;
+			statsInterval = 0L; // reset
+		}
+	}
+
+	/**
+	 * Renders the update statistics.
+	 * @param canvas the canvas.
+	 */
+	protected void renderStats(Canvas canvas)
+	{
+		Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+		paint.setColor(Color.WHITE);
+		paint.setStyle(Paint.Style.FILL);
+		paint.setTextSize(12);
+
+		DecimalFormat df = new DecimalFormat("0.##"); // 2 decimal precision
+		canvas.drawText("FPS:" + df.format(averageFPS), 10, getHeight()-10, paint);
+		canvas.drawText("UPS:" + df.format(averageUPS), 80, getHeight()-10, paint);
+	}
+
+	/**
 	 * Initializes the game.
 	 */
 	public abstract void gameInit();
 
 	/**
 	 * Updates the game state.
-	 * @param timePassed the time passed since the last update.
 	 */
-	public abstract void gameUpdate(long timePassed);
+	public abstract void gameUpdate();
 
 	/**
 	 * Renders the game.
-	 * @param c the canvas.
+	 * @param canvas the canvas.
 	 */
-	public abstract void gameRender(Canvas c);
+	public abstract void gameRender(Canvas canvas);
 }
 

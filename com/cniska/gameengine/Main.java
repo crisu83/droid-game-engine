@@ -1,6 +1,7 @@
 package com.cniska.gameengine;
 
 import android.app.Activity;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.Window;
 
@@ -19,11 +20,17 @@ public class Main extends Activity
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
+	    // Force orientation to landscape, which is more suitable for games.
+	    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
+	    // Remove the title bar.
 	    requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-	    int fps = DEFAULT_FPS;
-		long period = (long) 1000.0 / fps;
-	    
+	    // Calculate the period.
+		long period = (long) 1000.0 / DEFAULT_FPS;
+
+	    // Start the game.
         setContentView(new Template(this, period*1000000L)); // ms -> ns
     }
 }

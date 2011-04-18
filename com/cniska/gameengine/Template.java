@@ -3,6 +3,9 @@ package com.cniska.gameengine;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+
+import java.text.DecimalFormat;
 
 /**
  * Game template.
@@ -31,20 +34,21 @@ public class Template extends CGameEngine
 
 	/**
 	 * Updates the game state.
-	 * @param timePassed the time passed since the last update.
 	 */
 	@Override
-	public void gameUpdate(long timePassed)
+	public void gameUpdate()
 	{
 	}
 
 	/**
 	 * Renders the game.
-	 * @param c the canvas.
+	 * @param canvas the canvas.
 	 */
 	@Override
-	public void gameRender(Canvas c)
+	public void gameRender(Canvas canvas)
 	{
-		c.drawColor(Color.BLACK);
+		canvas.drawColor(Color.BLACK);
+
+		renderStats(canvas);
 	}
 }
