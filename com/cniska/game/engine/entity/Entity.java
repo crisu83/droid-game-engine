@@ -1,20 +1,20 @@
-package com.cniska.gameengine.entity;
+package com.cniska.game.engine.entity;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.view.SurfaceView;
-import com.cniska.gameengine.entity.sprite.CSprite;
+import com.cniska.game.engine.entity.sprite.Sprite;
 
 /**
- * Core entity class file.
+ * Entity class file.
  * @author Christoffer Niska <ChristofferNiska@gmail.com>
  * @license New BSD License http://www.opensource.org/licenses/bsd-license.php
  */
-public class CEntity
+public class Entity
 {
 	protected SurfaceView view;
 	
-	protected CSprite sprite;
+	protected Sprite sprite;
 
 	protected double x;
 	protected double y;
@@ -26,7 +26,7 @@ public class CEntity
 	 * @param bitmap the bitmap to represent this unit.
 	 * @param view the view this entity exists in.
 	 */
-	public CEntity(Bitmap bitmap, SurfaceView view)
+	public Entity(Bitmap bitmap, SurfaceView view)
 	{
 		this.x = 0;
 		this.y = 0;
@@ -34,7 +34,7 @@ public class CEntity
 		this.vy = 0;
 
 		this.view = view;
-		sprite = new CSprite(bitmap);
+		sprite = new Sprite(bitmap);
 	}
 
 	/**

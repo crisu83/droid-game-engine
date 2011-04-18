@@ -1,18 +1,15 @@
-package com.cniska.gameengine;
+package com.cniska.game.engine;
 
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
-
-import java.text.DecimalFormat;
 
 /**
  * Game template.
  * @author Christoffer Niska <ChristofferNiska@gmail.com>
  * @license New BSD License http://www.opensource.org/licenses/bsd-license.php
  */
-public class Template extends CGameEngine
+public class Template extends DroidGame
 {
 	/**
 	 * Create the game engine.

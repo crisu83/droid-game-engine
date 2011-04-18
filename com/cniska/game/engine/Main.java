@@ -1,4 +1,4 @@
-package com.cniska.gameengine;
+package com.cniska.game.engine;
 
 import android.app.Activity;
 import android.content.pm.ActivityInfo;

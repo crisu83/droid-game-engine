@@ -1,4 +1,4 @@
-package com.cniska.gameengine;
+package com.cniska.game.engine;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -15,7 +15,7 @@ import java.text.DecimalFormat;
  * @copyright ChristofferNiska@gmail.com
  * @license New BSD License http://www.opensource.org/licenses/bsd-license.php
  */
-public abstract class CGameEngine extends SurfaceView implements Runnable
+public abstract class DroidGame extends SurfaceView implements Runnable
 {
 	private Thread animator;
 
@@ -54,7 +54,7 @@ public abstract class CGameEngine extends SurfaceView implements Runnable
 	 * @param context the activity.
 	 * @param period the period in nanoseconds.
 	 */
-	public CGameEngine(Context context, long period)
+	public DroidGame(Context context, long period)
 	{
 		super(context);
 

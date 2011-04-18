@@ -1,14 +1,14 @@
-package com.cniska.gameengine.entity.sprite;
+package com.cniska.game.engine.entity.sprite;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
 /**
- * Core sprite class file.
+ * Sprite class file.
  * @author Christoffer Niska <ChristofferNiska@gmail.com>
  * @license New BSD License http://www.opensource.org/licenses/bsd-license.php
  */
-public class CSprite
+public class Sprite
 {
 	protected Bitmap bitmap;
 
@@ -21,7 +21,7 @@ public class CSprite
 	 * Creates the sprite.
 	 * @param bitmap the bitmap that represents the sprite.
 	 */
-	public CSprite(Bitmap bitmap)
+	public Sprite(Bitmap bitmap)
 	{
 		this.bitmap = bitmap;
 		this.x = 0;
