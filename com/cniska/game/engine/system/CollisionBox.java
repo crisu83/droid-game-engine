@@ -1,6 +1,8 @@
 package com.cniska.game.engine.system;
 
 import android.graphics.Rect;
+import com.cniska.game.engine.entity.Entity;
+import org.apache.http.entity.EntityTemplate;
 
 /**
  * @author Christoffer Niska <ChristofferNiska@gmail.com>
@@ -9,6 +11,7 @@ import android.graphics.Rect;
 public class CollisionBox
 {
 	private Rect box;
+	private Entity owner;
 
 	public CollisionBox(int x, int y, int width, int height)
 	{
@@ -23,5 +26,15 @@ public class CollisionBox
 	public Rect getBox()
 	{
 		return box;
+	}
+
+	public Entity getOwner()
+	{
+		return owner;
+	}
+
+	public void setOwner(Entity owner)
+	{
+		this.owner = owner;
 	}
 }

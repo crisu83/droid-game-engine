@@ -10,8 +10,14 @@ import com.cniska.game.engine.base.BaseCollection;
  * @author Christoffer Niska <ChristofferNiska@gmail.com>
  * @license New BSD License http://www.opensource.org/licenses/bsd-license.php
  */
-public class EntityManager extends BaseCollection
+public class EntityManager extends Base
 {
+	// ----------
+	// Properties
+	// ----------
+
+	private BaseCollection entities;
+
 	// -------
 	// Methods
 	// -------
@@ -22,6 +28,26 @@ public class EntityManager extends BaseCollection
 	public EntityManager()
 	{
 		super();
+		entities = new BaseCollection();
+	}
+
+	/**
+	 * Resets this entity manager.
+	 */
+	@Override
+	public void reset()
+	{
+		entities.reset();
+	}
+
+	/**
+	 * Updates the entities managed by this manager.
+	 * @param parent The parent object.
+	 */
+	@Override
+	public void update(Base parent)
+	{
+		entities.update(this);
 	}
 
 	/**
@@ -30,7 +56,7 @@ public class EntityManager extends BaseCollection
 	 */
 	public void addEntity(Entity entity)
 	{
-		super.add(entity);
+		entities.add(entity);
 	}
 
 	/**
@@ -39,6 +65,6 @@ public class EntityManager extends BaseCollection
 	 */
 	public void removeEntity(Entity entity)
 	{
-		super.remove(entity);
+		entities.remove(entity);
 	}
 }

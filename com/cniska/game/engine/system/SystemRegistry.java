@@ -4,6 +4,7 @@ import com.cniska.game.engine.base.Base;
 import com.cniska.game.engine.GameParams;
 import com.cniska.game.engine.base.BaseCollection;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,7 +20,7 @@ public class SystemRegistry
 	// Properties
 	// ----------
 
-	private static Map<Class<?>, BaseSystem> systems = new HashMap<Class<?>, BaseSystem>();
+	private static ArrayList<BaseSystem> systems = new ArrayList<BaseSystem>();
 	public static GameParams params;
 
 	// -------
@@ -32,23 +33,16 @@ public class SystemRegistry
 	 */
 	public synchronized static void addSystem(BaseSystem system)
 	{
-		Class type = system.getClass();
-		if (!systems.containsKey(type))
-		{
-			systems.put(type, system);
-		}
+		systems.add(system);
 	}
 
 	/**
 	 * Removes a system from the registry.
-	 * @param type The class of the system to remove.
+	 * @param system The system to remove.
 	 */
-	public synchronized static void removeSystem(Class<? extends BaseSystem> type)
+	public synchronized static void removeSystem(BaseSystem system)
 	{
-		if (systems.containsKey(type))
-		{
-			systems.remove(type);
-		}
+		systems.remove(system);
 	}
 
 	// -------------------
@@ -60,8 +54,19 @@ public class SystemRegistry
 	 * @param type The class of the system to return.
 	 * @return The system, or null if the system is not registered.
 	 */
-	public static BaseSystem getSystem(Class<? extends BaseSystem> type)
+	public static Base getSystem(Class<? extends BaseSystem> type)
 	{
-		return systems.containsKey(type) ? systems.get(type) : null;
+		if (systems.size() > 0)
+		{
+			for (Base system : systems)
+			{
+				if (system.getClass() == type)
+				{
+					return system;
+				}
+			}
+		}
+
+		return null;
 	}
 }

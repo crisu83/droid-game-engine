@@ -16,7 +16,7 @@ public class RenderComponent extends BaseComponent
 	// Properties
 	// ----------
 
-	private SpatialComponent positionComponent;
+	private SpatialComponent spartialComponent;
 	private SpriteComponent spriteComponent;
 
 	// -------
@@ -43,7 +43,7 @@ public class RenderComponent extends BaseComponent
 	@Override
 	public void reset()
 	{
-		positionComponent = null;
+		spartialComponent = null;
 		spriteComponent = null;
 	}
 
@@ -58,9 +58,9 @@ public class RenderComponent extends BaseComponent
 
 		if (system != null)
 		{
-			if (positionComponent != null && spriteComponent != null)
+			if (spartialComponent != null && spriteComponent != null)
 			{
-				system.queueForDraw(spriteComponent.getBitmap(), positionComponent.getPosition());
+				system.queueForDraw(spriteComponent.getBitmap(), spartialComponent.getPosition());
 			}
 		}
 	}
@@ -70,11 +70,11 @@ public class RenderComponent extends BaseComponent
 	// -------------------
 
 	/**
-	 * @param value The associated position component.
+	 * @param value The associated spatial component.
 	 */
-	public void setPositionComponent(SpatialComponent value)
+	public void setSpartialComponent(SpatialComponent value)
 	{
-		positionComponent = value;
+		spartialComponent = value;
 	}
 
 	/**

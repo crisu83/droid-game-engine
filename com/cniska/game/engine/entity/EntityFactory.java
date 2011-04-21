@@ -5,6 +5,7 @@ import com.cniska.game.blocks.R;
 import com.cniska.game.blocks.component.BlockComponent;
 import com.cniska.game.engine.GameParams;
 import com.cniska.game.engine.component.*;
+import com.cniska.game.engine.system.CollisionBox;
 import com.cniska.game.engine.system.SystemRegistry;
 
 /**
@@ -19,29 +20,33 @@ public class EntityFactory
 
 		Entity block = new Entity();
 
-		SpatialComponent pc = new SpatialComponent();
-		pc.setPosition(x, y);
-		block.addComponent(pc);
+		SpatialComponent spatialComponent = new SpatialComponent();
+		spatialComponent.setPosition(x, y);
+		block.addComponent(spatialComponent);
 
-		VelocityComponent vc = new VelocityComponent();
-		vc.setPositionComponent(pc);
-		vc.setVelocity(3, 3);
-		block.addComponent(vc);
+		VelocityComponent velocityComponent = new VelocityComponent();
+		velocityComponent.setPositionComponent(spatialComponent);
+		velocityComponent.setVelocity(5, 5);
+		block.addComponent(velocityComponent);
+
+		CollisionComponent collisionComponent = new CollisionComponent();
+		collisionComponent.setSpatialComponent(spatialComponent);
+		block.addComponent(collisionComponent);
 		
-		SpriteComponent sc = new SpriteComponent();
-		sc.setBitmap(BitmapFactory.decodeResource(params.context.getResources(), R.drawable.block));
-		block.addComponent(sc);
+		SpriteComponent spriteComponent = new SpriteComponent();
+		spriteComponent.setBitmap(BitmapFactory.decodeResource(params.context.getResources(), R.drawable.block));
+		block.addComponent(spriteComponent);
 
-		RenderComponent rc = new RenderComponent();
-		rc.setPositionComponent(pc);
-		rc.setSpriteComponent(sc);
-		block.addComponent(rc);
+		RenderComponent renderComponent = new RenderComponent();
+		renderComponent.setSpartialComponent(spatialComponent);
+		renderComponent.setSpriteComponent(spriteComponent);
+		block.addComponent(renderComponent);
 
-		BlockComponent bc = new BlockComponent();
-		bc.setPositionComponent(pc);
-		bc.setSpriteComponent(sc);
-		bc.setVelocityComponent(vc);
-		block.addComponent(bc);
+		BlockComponent blockComponent = new BlockComponent();
+		blockComponent.setPositionComponent(spatialComponent);
+		blockComponent.setSpriteComponent(spriteComponent);
+		blockComponent.setVelocityComponent(velocityComponent);
+		block.addComponent(blockComponent);
 
 		return block;
 	}

@@ -5,7 +5,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import com.cniska.game.engine.entity.EntityManager;
+import com.cniska.game.engine.base.Base;
+import com.cniska.game.engine.base.BaseCollection;
 import com.cniska.game.engine.system.RenderSystem;
 import com.cniska.game.engine.system.SystemRegistry;
 
@@ -26,7 +27,7 @@ public class GameThread implements Runnable
 	private volatile boolean finished = false;
 	private volatile boolean paused = false;
 	private SurfaceView view;
-	private EntityManager gameRoot;
+	private BaseCollection gameRoot;
 	private Object pauseLock;
 
 	private static final int NO_DELAYS_PER_YIELD = 16;
@@ -83,6 +84,7 @@ public class GameThread implements Runnable
 	 */
 	public void run()
 	{
+		Base parent = null; // We have no parent because we're at the root level.
 		long beforeTime, afterTime, timeDiff, sleepTime;
 		long overSleepTime = 0L;
 		int noDelays = 0;
@@ -95,7 +97,7 @@ public class GameThread implements Runnable
 		{
 			if (gameRoot != null)
 			{
-				gameRoot.update(null);
+				gameRoot.update(parent);
 
 				synchronized (this)
 				{
@@ -146,7 +148,7 @@ public class GameThread implements Runnable
 				while (excess > period && skips < MAX_FRAME_SKIPS)
 				{
 					excess -= period;
-					gameRoot.update(null); // update the state but do not render
+					gameRoot.update(parent); // update the state but do not render
 					skips++;
 				}
 
@@ -294,11 +296,11 @@ public class GameThread implements Runnable
 	// -------------------
 
 	/**
-	 * @param value The game root entity manager.
+	 * @param gameRoot The game root entity manager.
 	 */
-	public void setGameRoot(EntityManager value)
+	public void setGameRoot(BaseCollection gameRoot)
 	{
-		gameRoot = value;
+		this.gameRoot = gameRoot;
 	}
 
 	/**

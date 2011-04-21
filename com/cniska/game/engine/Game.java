@@ -3,6 +3,7 @@ package com.cniska.game.engine;
 import android.content.Context;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import com.cniska.game.engine.base.BaseCollection;
 import com.cniska.game.engine.entity.EntityManager;
 import com.cniska.game.engine.system.CollisionSystem;
 import com.cniska.game.engine.system.RenderSystem;
@@ -25,7 +26,7 @@ public abstract class Game extends SurfaceView implements SurfaceHolder.Callback
 	private volatile boolean running = false;
 	private GameThread gameThread;
 	private Thread game;
-	private EntityManager gameRoot;
+	private BaseCollection gameRoot;
 
 	// -------
 	// Methods
@@ -50,18 +51,18 @@ public abstract class Game extends SurfaceView implements SurfaceHolder.Callback
 
 		getHolder().addCallback(this);
 
-		gameRoot = new EntityManager();
+		gameRoot = new BaseCollection();
 		gameThread = new GameThread(this, period);
 		gameThread.setGameRoot(gameRoot);
 
 		// Create the rendering system.
 
-		RenderSystem renderSystem = new RenderSystem();
+		RenderSystem renderSystem = RenderSystem.getInstance();
 		SystemRegistry.addSystem(renderSystem);
 
 		// Create the collision system.
 
-		CollisionSystem collisionSystem = new CollisionSystem();
+		CollisionSystem collisionSystem = CollisionSystem.getInstance();
 		SystemRegistry.addSystem(collisionSystem);
 		gameRoot.add(collisionSystem);
 
@@ -170,9 +171,9 @@ public abstract class Game extends SurfaceView implements SurfaceHolder.Callback
 	// -------------------
 
 	/**
-	 * @return the root entity manager.
+	 * @return the root node of this game.
 	 */
-	public EntityManager getGameRoot()
+	public BaseCollection getGameRoot()
 	{
 		return gameRoot;
 	}

@@ -20,6 +20,7 @@ public class RenderSystem extends BaseSystem
 	// Properties
 	// ----------
 
+	private static final RenderSystem instance = new RenderSystem();
 	private ArrayList<DrawableBitmap> drawQueue;
 
 	// -------
@@ -29,19 +30,19 @@ public class RenderSystem extends BaseSystem
 	/**
 	 * Creates the system.
 	 */
-	public RenderSystem()
+	private RenderSystem()
 	{
 		super();
 		reset();
 	}
 
 	/**
-	 * Resets this system.
+	 * Returns the singleton instance of this class.
+	 * @return The system.
 	 */
-	@Override
-	public void reset()
+	public static RenderSystem getInstance()
 	{
-		drawQueue = new ArrayList<DrawableBitmap>();
+		return instance;
 	}
 
 	/**
@@ -52,6 +53,19 @@ public class RenderSystem extends BaseSystem
 	public void queueForDraw(Bitmap bitmap, Vector position)
 	{
 		drawQueue.add(new DrawableBitmap(bitmap, position));
+	}
+
+	// ------------------
+	// Overridden methods
+	// ------------------
+
+	/**
+	 * Resets this system.
+	 */
+	@Override
+	public void reset()
+	{
+		drawQueue = new ArrayList<DrawableBitmap>();
 	}
 
 	/**

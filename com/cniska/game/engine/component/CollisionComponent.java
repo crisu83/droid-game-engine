@@ -1,6 +1,7 @@
 package com.cniska.game.engine.component;
 
 import com.cniska.game.engine.base.Base;
+import com.cniska.game.engine.entity.Entity;
 import com.cniska.game.engine.system.CollisionBox;
 import com.cniska.game.engine.system.CollisionSystem;
 import com.cniska.game.engine.system.SystemRegistry;
@@ -46,8 +47,11 @@ public class CollisionComponent extends BaseComponent
 				Vector position = spatialComponent.getPosition();
 				Vector size = spatialComponent.getSize();
 
-				system.registerForCollision(new CollisionBox(Math.round(position.x), Math.round(position.y),
-						Math.round(size.x), Math.round(size.y)));
+				CollisionBox box = new CollisionBox(Math.round(position.x), Math.round(position.y),
+						Math.round(size.x), Math.round(size.y));
+
+				box.setOwner((Entity) parent);
+				system.registerForCollision(box);
 			}
 		}
 	}
