@@ -3,7 +3,11 @@ package com.cniska.game.engine;
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.view.SurfaceView;
 import android.view.Window;
+import android.view.WindowManager;
+import com.cniska.game.blocks.Blocks;
 
 /**
  * Main game activity.
@@ -14,6 +18,7 @@ import android.view.Window;
 public class Main extends Activity
 {
 	private static final int DEFAULT_FPS = 80;
+	private Game game;
 
     /** Called when the activity is first created. */
     @Override
@@ -24,13 +29,42 @@ public class Main extends Activity
 	    // Force orientation to landscape, which is more suitable for games.
 	    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
-	    // Remove the title bar.
+	    // Set full-screen.
 	    requestWindowFeature(Window.FEATURE_NO_TITLE);
+	    getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-	    // Calculate the period.
-		long period = (long) 1000.0 / DEFAULT_FPS;
+	    // -------------------------
+	    // Calculate display metrics
+	    // -------------------------
 
-	    // Start the game.
-        setContentView(new Template(this, period*1000000L)); // ms -> ns
+	    DisplayMetrics dm = new DisplayMetrics();
+	    getWindowManager().getDefaultDisplay().getMetrics(dm);
+
+	    // ----------------------
+	    // Create the game engine
+	    // ----------------------
+
+	    long period = (long) 1000.0 / DEFAULT_FPS;
+        game = new Template(this, dm.widthPixels, dm.heightPixels, period * 1000000L);
+
+	    setContentView(game);
     }
+
+	protected void onDestroy()
+	{
+		game.stop();
+		super.onDestroy();
+	}
+
+	protected void onPaused()
+	{
+		super.onPause();
+		game.onPause();
+	}
+
+	protected void onResume()
+	{
+		super.onResume();
+		game.onResume();
+	}
 }

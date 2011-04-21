@@ -9,43 +9,25 @@ import android.graphics.Color;
  * @author Christoffer Niska <ChristofferNiska@gmail.com>
  * @license New BSD License http://www.opensource.org/licenses/bsd-license.php
  */
-public class Template extends DroidGame
+public class Template extends Game
 {
 	/**
-	 * Create the game engine.
-	 * @param context the activity.
-	 * @param period the period in nanoseconds.
+	 * Creates the game.
+	 * @param context the context.
+	 * @param gameWidth the width of the game.
+	 * @param gameHeight the height of the game.
+	 * @param period the update period in nano seconds.
 	 */
-	public Template(Context context, long period)
+	public Template(Context context, int gameWidth, int gameHeight, long period)
 	{
-		super(context, period);
+		super(context, gameWidth, gameHeight, period);
 	}
 
 	/**
 	 * Initializes the game.
 	 */
 	@Override
-	public void gameInit()
+	public void init()
 	{
-	}
-
-	/**
-	 * Updates the game state.
-	 */
-	@Override
-	public void gameUpdate()
-	{
-	}
-
-	/**
-	 * Renders the game.
-	 * @param canvas the canvas.
-	 */
-	@Override
-	public void gameRender(Canvas canvas)
-	{
-		canvas.drawColor(Color.BLACK);
-
-		renderStats(canvas);
 	}
 }
