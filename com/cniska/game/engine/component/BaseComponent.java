@@ -44,21 +44,6 @@ public abstract class BaseComponent extends Stateful
 	{
 		super();
 	}
-
-	// ----------------
-	// Abstract methods
-	// ----------------
-
-	/**
-	 * Resets the component.
-	 */
-	public abstract void reset();
-
-	/**
-	 * Updates the component.
-	 * @param parent The parent object.
-	 */
-	public abstract void update(Base parent);
 	
 	// -------------------
 	// Getters and setters

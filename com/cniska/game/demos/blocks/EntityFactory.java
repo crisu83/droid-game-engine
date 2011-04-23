@@ -1,11 +1,10 @@
-package com.cniska.game.engine.entity;
+package com.cniska.game.demos.blocks;
 
-import android.graphics.BitmapFactory;
-import com.cniska.game.blocks.R;
-import com.cniska.game.blocks.component.BlockComponent;
+import android.graphics.Bitmap;
+import com.cniska.game.demos.blocks.component.BlockComponent;
 import com.cniska.game.engine.GameParams;
 import com.cniska.game.engine.component.*;
-import com.cniska.game.engine.system.CollisionBox;
+import com.cniska.game.engine.entity.Entity;
 import com.cniska.game.engine.system.SystemRegistry;
 
 /**
@@ -14,28 +13,35 @@ import com.cniska.game.engine.system.SystemRegistry;
  */
 public class EntityFactory
 {
-	public static Entity createBlock(float x, float y)
+	public static Entity createBlock(Bitmap bitmap, float x, float y)
 	{
 		GameParams params = SystemRegistry.params;
 
 		Entity block = new Entity();
 
+		SpriteComponent spriteComponent = new SpriteComponent();
+		spriteComponent.setBitmap(bitmap);
+		block.addComponent(spriteComponent);
+
 		SpatialComponent spatialComponent = new SpatialComponent();
 		spatialComponent.setPosition(x, y);
+		spatialComponent.setSize(spriteComponent.getSize());
 		block.addComponent(spatialComponent);
 
 		VelocityComponent velocityComponent = new VelocityComponent();
 		velocityComponent.setPositionComponent(spatialComponent);
-		velocityComponent.setVelocity(5, 5);
+		velocityComponent.setVelocity(1, 1);
 		block.addComponent(velocityComponent);
+
+		BounceComponent reactionComponent = new BounceComponent();
+		reactionComponent.setSpatialComponent(spatialComponent);
+		reactionComponent.setVelocityComponent(velocityComponent);
+		block.addComponent(reactionComponent);
 
 		CollisionComponent collisionComponent = new CollisionComponent();
 		collisionComponent.setSpatialComponent(spatialComponent);
+		collisionComponent.setReactionComponent(reactionComponent);
 		block.addComponent(collisionComponent);
-		
-		SpriteComponent spriteComponent = new SpriteComponent();
-		spriteComponent.setBitmap(BitmapFactory.decodeResource(params.context.getResources(), R.drawable.block));
-		block.addComponent(spriteComponent);
 
 		RenderComponent renderComponent = new RenderComponent();
 		renderComponent.setSpartialComponent(spatialComponent);
@@ -43,7 +49,7 @@ public class EntityFactory
 		block.addComponent(renderComponent);
 
 		BlockComponent blockComponent = new BlockComponent();
-		blockComponent.setPositionComponent(spatialComponent);
+		blockComponent.setSpatialComponent(spatialComponent);
 		blockComponent.setSpriteComponent(spriteComponent);
 		blockComponent.setVelocityComponent(velocityComponent);
 		block.addComponent(blockComponent);

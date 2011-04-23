@@ -1,4 +1,4 @@
-package com.cniska.game.engine;
+package com.cniska.game.demos.blocks;
 
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.Window;
 import android.view.WindowManager;
+import com.cniska.game.engine.Game;
 
 /**
  * Main game activity.
@@ -43,8 +44,8 @@ public class Main extends Activity
 	    // ----------------------
 
 	    long period = (long) 1000.0 / DEFAULT_FPS;
-        game = new Template(this, dm.widthPixels, dm.heightPixels, period * 1000000L);
-
+        game = new Blocks(this, dm.widthPixels, dm.heightPixels, period * 1000000L);
+	    
 	    setContentView(game);
     }
 

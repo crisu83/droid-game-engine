@@ -1,8 +1,8 @@
 package com.cniska.game.engine.component;
 
 import com.cniska.game.engine.base.Base;
+import com.cniska.game.engine.collision.CollisionVolume;
 import com.cniska.game.engine.entity.Entity;
-import com.cniska.game.engine.system.CollisionBox;
 import com.cniska.game.engine.system.CollisionSystem;
 import com.cniska.game.engine.system.SystemRegistry;
 import com.cniska.game.engine.util.Vector;
@@ -13,14 +13,30 @@ import com.cniska.game.engine.util.Vector;
  */
 public class CollisionComponent extends BaseComponent
 {
-	private SpatialComponent spatialComponent;
+	// ----------
+	// Properties
+	// ----------
 
+	private SpatialComponent spatialComponent;
+	private ReactionComponent reactionComponent;
+
+	// -------
+	// Methods
+	// -------
+
+	/**
+	 * Creates the component.
+	 */
 	public CollisionComponent()
 	{
 		super();
 		reset();
 		setState(ComponentState.COLLISION.ordinal());
 	}
+
+	// -----------------
+	// Overridden method
+	// -----------------
 
 	/**
 	 * Resets the component.
@@ -42,22 +58,40 @@ public class CollisionComponent extends BaseComponent
 
 		if (system != null)
 		{
-			if (spatialComponent != null)
+			if (spatialComponent != null) // we do not require a reaction component
 			{
 				Vector position = spatialComponent.getPosition();
 				Vector size = spatialComponent.getSize();
 
-				CollisionBox box = new CollisionBox(Math.round(position.x), Math.round(position.y),
-						Math.round(size.x), Math.round(size.y));
+				int left = Math.round(position.x);
+				int top = Math.round(position.y);
+				int right = left + Math.round(size.x);
+				int bottom = top + Math.round(size.y);
 
-				box.setOwner((Entity) parent);
-				system.registerForCollision(box);
+				CollisionVolume volume = new CollisionVolume(left, top, right, bottom);
+
+				system.registerForCollision(volume, (Entity) parent, reactionComponent);
 			}
 		}
 	}
 
+	// -------------------
+	// Getters and setters
+	// -------------------
+
+	/**
+	 * @param component The associated spatial component.
+	 */
 	public void setSpatialComponent(SpatialComponent component)
 	{
 		spatialComponent = component;
+	}
+
+	/**
+	 * @param component The associated reaction component.
+	 */
+	public void setReactionComponent(ReactionComponent component)
+	{
+		reactionComponent = component;
 	}
 }

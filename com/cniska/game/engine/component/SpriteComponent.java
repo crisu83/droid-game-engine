@@ -2,6 +2,7 @@ package com.cniska.game.engine.component;
 
 import android.graphics.Bitmap;
 import com.cniska.game.engine.base.Base;
+import com.cniska.game.engine.util.Vector;
 
 /**
  * Sprite component class file.
@@ -74,18 +75,10 @@ public class SpriteComponent extends BaseComponent
 	}
 
 	/**
-	 * @return The width of the sprite.
+	 * @return The size of the sprite as a vector.
 	 */
-	public int getWidth()
+	public Vector getSize()
 	{
-		return bitmap.getWidth();
-	}
-
-	/**
-	 * @return The height of the sprite.
-	 */
-	public int getHeight()
-	{
-		return bitmap.getHeight();
+		return new Vector(bitmap.getWidth(), bitmap.getHeight());
 	}
 }
