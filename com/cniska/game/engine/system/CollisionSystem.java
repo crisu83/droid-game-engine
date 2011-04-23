@@ -99,7 +99,7 @@ public class CollisionSystem extends BaseSystem
 
 								if (other.reactionComponent != null)
 								{
-									other.reactionComponent.onImpact(record.volume, other.volume);
+									other.reactionComponent.onImpact(other.volume, record.volume);
 								}
 
 								other.valid = false; // we don't want to process records twice

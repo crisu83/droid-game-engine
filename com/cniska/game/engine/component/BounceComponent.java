@@ -1,9 +1,10 @@
 package com.cniska.game.engine.component;
 
 import com.cniska.game.engine.collision.CollisionVolume;
-import com.cniska.game.engine.entity.Entity;
 import com.cniska.game.engine.util.Util;
 import com.cniska.game.engine.util.Vector;
+
+import java.util.ArrayList;
 
 /**
  * Bouce component class file.
@@ -17,6 +18,7 @@ public class BounceComponent extends ReactionComponent
 	// Properties
 	// ----------
 
+	private static ArrayList<Overlap> overlaps = new ArrayList<Overlap>();
 	private SpatialComponent spatialComponent;
 	private VelocityComponent velocityComponent;
 
@@ -46,29 +48,37 @@ public class BounceComponent extends ReactionComponent
 			Vector size = spatialComponent.getSize();
 			Vector velocity = velocityComponent.getVelocity();
 
-			// Collision from the left.
-			if (volume.getMinX() >= other.getMinX() && isCollisionHorizonal(volume, other))
+			float left = volume.getMaxX() - other.getMinX();
+			float top = volume.getMaxY() - other.getMinY();
+			float right = volume.getMinX() - other.getMaxX();
+			float bottom = volume.getMinY() - other.getMaxY();
+
+			OverlapType type = resolveOverlapType(left, top, right, bottom);
+
+			switch (type)
 			{
-				//position.x = other.getMaxX();
-				velocity.x = Util.invert(velocity.x);
-			}
-			// Collision from above.
-			else if (volume.getMinY() <= other.getMinY() && isCollisionVertical(volume, other))
-			{
-				//position.y = other.getMinY();
-				velocity.y = Util.invert(velocity.y);
-			}
-			// Collision from the right.
-			else if (volume.getMaxX() <= other.getMaxX() && isCollisionHorizonal(volume, other))
-			{
-				//position.x = other.getMinX() - size.x;
-				velocity.x = Util.invert(velocity.x);
-			}
-			// Collision from below.
-			else if (volume.getMaxY() >= other.getMaxY() && isCollisionVertical(volume, other))
-			{
-				//position.y = other.getMaxY() - size.y;
-				velocity.y = Util.invert(velocity.y);
+				case LEFT:
+					position.x = other.getMinX() - size.x -  1;
+					velocity.x = Util.invert(velocity.x);
+					break;
+
+				case TOP:
+					position.y = other.getMinY() - size.y - 1;
+					velocity.y = Util.invert(velocity.y);
+					break;
+
+				case RIGHT:
+					position.x = other.getMaxX() + 1;
+					velocity.x = Util.invert(velocity.x);
+					break;
+
+				case BOTTOM:
+					position.y = other.getMaxY() + 1;
+					velocity.y = Util.invert(velocity.y);
+					break;
+
+				default:
+					// This should never happen.
 			}
 
 			spatialComponent.setPosition(position);
@@ -76,14 +86,33 @@ public class BounceComponent extends ReactionComponent
 		}
 	}
 
-	private boolean isCollisionHorizonal(CollisionVolume v1, CollisionVolume v2)
+	private OverlapType resolveOverlapType(float left, float top, float right, float bottom)
 	{
-		return v1.getMinY() < v2.getMaxY() && v1.getMaxY() > v2.getMinY();
-	}
+		overlaps.clear();
+		overlaps.add(new Overlap(left, OverlapType.LEFT));
+		overlaps.add(new Overlap(top, OverlapType.TOP));
+		overlaps.add(new Overlap(right, OverlapType.RIGHT));
+		overlaps.add(new Overlap(bottom, OverlapType.BOTTOM));
 
-	private boolean isCollisionVertical(CollisionVolume v1, CollisionVolume v2)
-	{
-		return v1.getMinX() < v2.getMaxX() && v1.getMaxX() > v2.getMinX();
+		Overlap overlap = null;
+		for (int i = 0, length = overlaps.size(); i < length; i++)
+		{
+			Overlap current = overlaps.get(i);
+
+			if (overlap != null)
+			{
+				if (Math.abs(current.value) < Math.abs(overlap.value))
+				{
+					overlap = current;
+				}
+			}
+			else
+			{
+				overlap = current;
+			}
+		}
+
+		return overlap.type;
 	}
 
 	// -------------------
@@ -104,5 +133,17 @@ public class BounceComponent extends ReactionComponent
 	public void setVelocityComponent(VelocityComponent component)
 	{
 		velocityComponent = component;
+	}
+
+	private class Overlap
+	{
+		public OverlapType type;
+		public float value;
+
+		public Overlap(float value, OverlapType type)
+		{
+			this.value = value;
+			this.type = type;
+		}
 	}
 }

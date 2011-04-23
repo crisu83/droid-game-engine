@@ -7,30 +7,32 @@ import com.cniska.game.engine.component.*;
 import com.cniska.game.engine.entity.Entity;
 import com.cniska.game.engine.system.SystemRegistry;
 
+import java.util.Random;
+
 /**
  * @author Christoffer Niska <ChristofferNiska@gmail.com>
  * @license New BSD License http://www.opensource.org/licenses/bsd-license.php
  */
 public class EntityFactory
 {
-	public static Entity createBlock(Bitmap bitmap, float x, float y)
+	public static Entity createBlock(String name, Bitmap bitmap)
 	{
-		GameParams params = SystemRegistry.params;
+		Random rand = new Random();
 
-		Entity block = new Entity();
+		Entity block = new Entity(name);
 
 		SpriteComponent spriteComponent = new SpriteComponent();
 		spriteComponent.setBitmap(bitmap);
 		block.addComponent(spriteComponent);
 
 		SpatialComponent spatialComponent = new SpatialComponent();
-		spatialComponent.setPosition(x, y);
+		spatialComponent.setPosition((float) rand.nextInt(449), (float) rand.nextInt(289));
 		spatialComponent.setSize(spriteComponent.getSize());
 		block.addComponent(spatialComponent);
 
 		VelocityComponent velocityComponent = new VelocityComponent();
 		velocityComponent.setPositionComponent(spatialComponent);
-		velocityComponent.setVelocity(1, 1);
+		velocityComponent.setVelocity((float) rand.nextInt(3) + 1, (float) rand.nextInt(3) + 1);
 		block.addComponent(velocityComponent);
 
 		BounceComponent reactionComponent = new BounceComponent();

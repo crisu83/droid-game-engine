@@ -53,7 +53,7 @@ public class CollisionVolume
 	 */
 	public int getMinY()
 	{
-		return volume.bottom;
+		return volume.top;
 	}
 
 	/**
@@ -61,7 +61,7 @@ public class CollisionVolume
 	 */
 	public int getMaxY()
 	{
-		return volume.top;
+		return volume.bottom;
 	}
 
 	// -------------------

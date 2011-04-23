@@ -18,6 +18,7 @@ public class Entity extends Base
 	// ----------
 
 	private StatefulCollection components;
+	private String name;
 
 	// -------
 	// Methods
@@ -26,9 +27,10 @@ public class Entity extends Base
 	/**
 	 * Creates the entity.
 	 */
-	public Entity()
+	public Entity(String name)
 	{
 		super();
+		this.name = name;
 		components = new StatefulCollection();
 	}
 

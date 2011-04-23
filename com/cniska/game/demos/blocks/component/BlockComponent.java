@@ -67,28 +67,29 @@ public class BlockComponent extends BaseComponent
 
 			if ((position.x + size.x) >= params.gameWidth)
 			{
-				velocity.x = -Math.abs(velocity.x);
 				position.x = params.gameWidth - size.x;
+				velocity.x = -Math.abs(velocity.x);
 			}
 
 			if (position.x <= 0)
 			{
-				velocity.x = Math.abs(velocity.x);
 				position.x = 0;
+				velocity.x = Math.abs(velocity.x);
 			}
 
 			if ((position.y + size.y) >= params.gameHeight)
 			{
-				velocity.y = -Math.abs(velocity.y);
 				position.y = params.gameHeight - size.y;
+				velocity.y = -Math.abs(velocity.y);
 			}
 
 			if (position.y <= 0)
 			{
-				velocity.y = Math.abs(velocity.y);
 				position.y = 0;
+				velocity.y = Math.abs(velocity.y);
 			}
 
+			spatialComponent.setPosition(position);
 			velocityComponent.setVelocity(velocity);
 		}
 	}

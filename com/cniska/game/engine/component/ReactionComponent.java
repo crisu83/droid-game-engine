@@ -8,6 +8,14 @@ import com.cniska.game.engine.collision.CollisionVolume;
  */
 public abstract class ReactionComponent extends BaseComponent
 {
+	public enum OverlapType
+	{
+		LEFT,
+		TOP,
+		RIGHT,
+		BOTTOM,
+	};
+
 	// -------
 	// Methods
 	// -------

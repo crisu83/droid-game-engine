@@ -1,5 +1,6 @@
 package com.cniska.game.engine.component;
 
+import android.util.Log;
 import com.cniska.game.engine.base.Base;
 import com.cniska.game.engine.collision.CollisionVolume;
 import com.cniska.game.engine.entity.Entity;
