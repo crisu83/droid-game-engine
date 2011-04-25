@@ -3,17 +3,17 @@ package com.cniska.game.engine.base;
 import java.util.Comparator;
 
 /**
- * 
+ * Stateful collection class file.
+ * This class provides functionality for sorting a collection based on states.
  * @author Christoffer Niska <ChristofferNiska@gmail.com>
  * @license New BSD License http://www.opensource.org/licenses/bsd-license.php
  */
-public class StatefulCollection extends BaseCollection
+public class StatefulCollection extends SortedCollection
 {
 	// ----------
 	// Properties
 	// ----------
 
-	private boolean sorted = false;
 	private final static StateComparator stateComparator = new StateComparator();
 
 	// -------
@@ -25,39 +25,6 @@ public class StatefulCollection extends BaseCollection
 		super();
 		getObjects().setComparator(stateComparator);
 		getAdditions().setComparator(stateComparator);
-	}
-
-	// ------------------
-	// Overridden methods
-	// ------------------
-
-	/**
-	 * Adds an object to this collection.
-	 * @param object The object to add.
-	 */
-	@Override
-	public void add(Base object)
-	{
-		if (object instanceof Stateful)
-		{
-			super.add(object);
-			sorted = false;
-		}
-	}
-
-	/**
-	 * Applies the pending additions and removals to this collections.
-	 */
-	@Override
-	public void applyChanges()
-	{
-		super.applyChanges();
-
-		if (!sorted)
-		{
-			getObjects().sort();
-			sorted = true;
-		}
 	}
 
 	// -------------
@@ -89,7 +56,7 @@ public class StatefulCollection extends BaseCollection
 			{
 				return 1;
 			}
-			else if (object2 == null && object1 != null)
+			else if (object1 != null)
 			{
 				return -1;
 			}

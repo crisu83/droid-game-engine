@@ -6,11 +6,6 @@ package com.cniska.game.engine.util;
  */
 public class Util
 {
-	public static int invert(int value)
-	{
-		return value > 0 ? -Math.abs(value) : Math.abs(value);
-	}
-
 	public static float invert(float value)
 	{
 		return value > 0.0f ? -Math.abs(value) : Math.abs(value);

@@ -10,6 +10,8 @@ import com.cniska.game.engine.entity.Entity;
 import java.util.ArrayList;
 
 /**
+ * Collision system class file.
+ * This class provides the logic for determining whether entities have collided.
  * @author Christoffer Niska <ChristofferNiska@gmail.com>
  * @license New BSD License http://www.opensource.org/licenses/bsd-license.php
  */
@@ -32,6 +34,7 @@ public class CollisionSystem extends BaseSystem
 	private CollisionSystem()
 	{
 		super();
+		records = new ArrayList<CollisionRecord>();
 		reset();
 	}
 
@@ -48,6 +51,7 @@ public class CollisionSystem extends BaseSystem
 	 * Registers a new collision volume to the system.
 	 * @param volume The collision volume.
 	 * @param entity The associated entity.
+	 * @param reactionComponent The associated reaction component.
 	 */
 	public void registerForCollision(CollisionVolume volume, Entity entity, ReactionComponent reactionComponent)
 	{
@@ -68,7 +72,7 @@ public class CollisionSystem extends BaseSystem
 	@Override
 	public void reset()
 	{
-		records = new ArrayList<CollisionRecord>();
+		records.clear();
 	}
 
 	/**
@@ -79,14 +83,20 @@ public class CollisionSystem extends BaseSystem
 	@Override
 	public void update(Base parent)
 	{
-		if (records.size() > 0)
+		final int recordsCount = records.size();
+
+		if (recordsCount > 0)
 		{
-			for (CollisionRecord record : records)
+			for (int i = 0; i < recordsCount; i++)
 			{
+				CollisionRecord record = records.get(i);
+
 				if (record.valid)
 				{
-					for (CollisionRecord other : records)
+					for (int j = 0; j < recordsCount; j++)
 					{
+						CollisionRecord other = records.get(j);
+
 						if (record.entity != other.entity)
 						{
 							// Currently we only support rectangular shapes.
@@ -94,12 +104,14 @@ public class CollisionSystem extends BaseSystem
 							{
 								if (record.reactionComponent != null)
 								{
-									record.reactionComponent.onImpact(record.volume, other.volume);
+									record.reactionComponent.onImpact(record.entity, record.volume,
+											other.entity, other.volume);
 								}
 
 								if (other.reactionComponent != null)
 								{
-									other.reactionComponent.onImpact(other.volume, record.volume);
+									other.reactionComponent.onImpact(other.entity, other.volume,
+											record.entity, record.volume);
 								}
 
 								other.valid = false; // we don't want to process records twice
@@ -117,6 +129,11 @@ public class CollisionSystem extends BaseSystem
 	// Inner classes
 	// -------------
 
+	/**
+	 * Collision record class.
+	 * This class represents a single record in the collision system.
+	 * Records are used for detemining whether a collision has occured.
+	 */
 	private class CollisionRecord
 	{
 		public Entity entity;

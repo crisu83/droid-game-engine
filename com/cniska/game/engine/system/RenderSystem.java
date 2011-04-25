@@ -33,6 +33,7 @@ public class RenderSystem extends BaseSystem
 	private RenderSystem()
 	{
 		super();
+		drawQueue = new ArrayList<DrawableBitmap>();
 		reset();
 	}
 
@@ -65,7 +66,7 @@ public class RenderSystem extends BaseSystem
 	@Override
 	public void reset()
 	{
-		drawQueue = new ArrayList<DrawableBitmap>();
+		drawQueue.clear();
 	}
 
 	/**
@@ -79,11 +80,13 @@ public class RenderSystem extends BaseSystem
 		
 		synchronized (this)
 		{
-			if (drawQueue.size() > 0)
+			final int drawCount = drawQueue.size();
+
+			if (drawCount > 0)
 			{
-				for (DrawableBitmap item : drawQueue)
+				for (int i = 0; i < drawCount; i++)
 				{
-					item.render(canvas);
+					drawQueue.get(i).render(canvas);
 				}
 			}
 		}

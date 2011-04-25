@@ -3,10 +3,12 @@ package com.cniska.game.engine;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.os.Debug;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import com.cniska.game.engine.base.Base;
 import com.cniska.game.engine.base.BaseCollection;
+import com.cniska.game.engine.debug.Logger;
 import com.cniska.game.engine.system.RenderSystem;
 import com.cniska.game.engine.system.SystemRegistry;
 
@@ -39,17 +41,17 @@ public class GameThread implements Runnable
 	private long prevStatsTime;
 	private long totalElapsedTime = 0L;
 	private long gameStartTime;
-	protected int timeSpentInGame = 0; // in seconds
+	private int timeSpentInGame = 0; // in seconds
 
 	private long framesSkipped = 0L;
 	private long totalFramesSkipped = 0L;
 	private double upsStore[];
-	protected double averageUPS = 0.0;
+	private double averageUPS = 0.0;
 
 	private long frameCount = 0;
 	private double fpsStore[];
 	private long statsCount = 0;
-	protected double averageFPS = 0.0;
+	private double averageFPS = 0.0;
 
 	// -------
 	// Methods
@@ -77,6 +79,8 @@ public class GameThread implements Runnable
 			fpsStore[i] = 0.0;
 			upsStore[i] = 0.0;
 		}
+
+		Logger.info(Logger.TAG_CORE, "Game thread created.");
 	}
 
 	/**
@@ -93,10 +97,14 @@ public class GameThread implements Runnable
 		prevStatsTime = gameStartTime;
 		beforeTime = gameStartTime;
 
+		Logger.info(Logger.TAG_CORE, "Starting the game loop.");
+
 		while (!finished)
 		{
 			if (gameRoot != null)
 			{
+				//Debug.startMethodTracing("gameLoop");
+
 				gameRoot.update(parent);
 
 				synchronized (this)
@@ -124,7 +132,10 @@ public class GameThread implements Runnable
 					{
 						Thread.sleep(sleepTime/1000000L); // ns -> ms
 					}
-					catch (InterruptedException e) {}
+					catch (InterruptedException e)
+					{
+						Logger.info(Logger.TAG_CORE, "Game loop sleep interrupted.");						
+					}
 
 					overSleepTime = (System.nanoTime() - afterTime) - sleepTime;
 				}
@@ -155,6 +166,8 @@ public class GameThread implements Runnable
 				framesSkipped += skips;
 
 				saveStats();
+
+				//Debug.stopMethodTracing();
 			}
 
 			synchronized (pauseLock)
@@ -167,7 +180,10 @@ public class GameThread implements Runnable
 						{
 							pauseLock.wait();
 						}
-						catch (InterruptedException e) {}
+						catch (InterruptedException e)
+						{
+							Logger.info(Logger.TAG_CORE, "Paused lock interrupted.");
+						}
 					}
 				}
 			}

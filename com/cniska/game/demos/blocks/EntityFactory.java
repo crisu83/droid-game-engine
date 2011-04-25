@@ -1,6 +1,7 @@
 package com.cniska.game.demos.blocks;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import com.cniska.game.demos.blocks.component.BlockComponent;
 import com.cniska.game.engine.GameParams;
 import com.cniska.game.engine.component.*;
@@ -15,7 +16,57 @@ import java.util.Random;
  */
 public class EntityFactory
 {
-	public static Entity createBlock(String name, Bitmap bitmap)
+	public enum EntityType
+	{
+		TEAL_BLOCK,
+		VIOLET_BLOCK,
+		YELLOW_BLOCK,
+	}
+
+	public static Entity factory(EntityType type, float x, float y)
+	{
+		Entity entity = null;
+
+		switch (type)
+		{
+			case TEAL_BLOCK:
+				entity = createTealBlock();
+				break;
+
+			case VIOLET_BLOCK:
+				entity = createVioletBlock();
+				break;
+
+			case YELLOW_BLOCK:
+				entity = createYellowBlock();
+				break;
+		}
+
+		return entity;
+	}
+
+	private static Entity createTealBlock()
+	{
+		Bitmap bitmap = BitmapFactory.decodeResource(
+				SystemRegistry.params.context.getResources(), R.drawable.teal_block);
+		return createBlock("TEAL", bitmap);
+	}
+
+	private static Entity createVioletBlock()
+	{
+		Bitmap bitmap = BitmapFactory.decodeResource( 
+				SystemRegistry.params.context.getResources(), R.drawable.violet_block);
+		return createBlock("VIOLET", bitmap);
+	}
+
+	private static Entity createYellowBlock()
+	{
+		Bitmap bitmap = BitmapFactory.decodeResource(
+				SystemRegistry.params.context.getResources(), R.drawable.yellow_block);
+		return createBlock("YELLOW", bitmap);
+	}
+
+	private static Entity createBlock(String name, Bitmap bitmap)
 	{
 		Random rand = new Random();
 

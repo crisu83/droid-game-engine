@@ -45,15 +45,6 @@ public class SpriteComponent extends BaseComponent
 		bitmap = null;
 	}
 
-	/**
-	 * Updates the component.
-	 * @param parent The parent object.
-	 */
-	@Override
-	public void update(Base parent)
-	{
-	}
-
 	// -------------------
 	// Getters and setters
 	// -------------------

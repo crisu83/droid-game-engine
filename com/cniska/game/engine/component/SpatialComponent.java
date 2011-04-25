@@ -48,15 +48,6 @@ public class SpatialComponent extends BaseComponent
 		size.reset();
 	}
 
-	/**
-	 * Updates the component.
-	 * @param parent The parent object.
-	 */
-	@Override
-	public void update(Base parent)
-	{
-	}
-
 	// -------------------
 	// Getters and setters
 	// -------------------

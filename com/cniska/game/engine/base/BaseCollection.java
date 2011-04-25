@@ -75,21 +75,25 @@ public class BaseCollection extends Base
 	 */
 	public void applyChanges()
 	{
-		if (additions.size() > 0)
+		final int additionsCount = additions.size();
+
+		if (additionsCount > 0)
 		{
-			for (Base object : additions)
+			for (int i = 0; i < additionsCount; i++)
 			{
-				objects.add(object);
+				objects.add( additions.get(i) );
 			}
 
 			additions.clear();
 		}
 
-		if (removals.size() > 0)
+		final int removalsCount = removals.size();
+
+		if (removalsCount > 0)
 		{
-			for (Base object : removals)
+			for (int i = 0; i < removalsCount; i++)
 			{
-				objects.remove(object);
+				objects.remove( removals.get(i) );
 			}
 
 			removals.clear();
@@ -108,11 +112,13 @@ public class BaseCollection extends Base
 	{
 		applyChanges();
 
-		if (objects.size() > 0)
+		final int objectsCount = objects.size();
+
+		if (objectsCount > 0)
 		{
-			for (Base object : objects)
+			for (int i = 0; i < objectsCount; i++)
 			{
-				object.update(this);
+				objects.get(i).update(this);
 			}
 		}
 	}
@@ -125,11 +131,13 @@ public class BaseCollection extends Base
 	{
 		applyChanges();
 
-		if (objects.size() > 0)
+		final int objectsCount = objects.size();
+		
+		if (objectsCount > 0)
 		{
-			for (Base object : objects)
+			for (int i = 0; i < objectsCount; i++)
 			{
-				object.reset();
+				objects.get(i).reset();
 			}
 		}
 	}
@@ -161,11 +169,17 @@ public class BaseCollection extends Base
 	 */
 	public Base findByClass(Class<?> type)
 	{
-		for (Base object : objects)
+		final int objectsCount = objects.size();
+		if (objectsCount > 0)
 		{
-			if (object.getClass() == type)
+			for (int i = 0; i < objectsCount; i++)
 			{
-				return object;
+				Base object = objects.get(i);
+
+				if (object.getClass() == type)
+				{
+					return object;
+				}
 			}
 		}
 

@@ -56,10 +56,14 @@ public class SystemRegistry
 	 */
 	public static Base getSystem(Class<? extends BaseSystem> type)
 	{
-		if (systems.size() > 0)
+		final int systemsCount = systems.size();
+
+		if (systemsCount > 0)
 		{
-			for (Base system : systems)
+			for (int i = 0; i < systemsCount; i++)
 			{
+				BaseSystem system = systems.get(i);
+
 				if (system.getClass() == type)
 				{
 					return system;

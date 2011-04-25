@@ -1,6 +1,9 @@
 package com.cniska.game.engine.component;
 
+import android.os.Debug;
 import com.cniska.game.engine.collision.CollisionVolume;
+import com.cniska.game.engine.debug.Logger;
+import com.cniska.game.engine.entity.Entity;
 import com.cniska.game.engine.util.Util;
 import com.cniska.game.engine.util.Vector;
 
@@ -18,7 +21,6 @@ public class BounceComponent extends ReactionComponent
 	// Properties
 	// ----------
 
-	private static ArrayList<Overlap> overlaps = new ArrayList<Overlap>();
 	private SpatialComponent spatialComponent;
 	private VelocityComponent velocityComponent;
 
@@ -36,11 +38,12 @@ public class BounceComponent extends ReactionComponent
 
 	/**
 	 * Actions to be taken when a collision occurs.
+	 * @param entity The colliding entity.
 	 * @param volume The collision volume.
-	 * @param other The counterpart collision volume.
+	 * @param otherEntity The counterpart entity.
+	 * @param otherVolume The collision volume for the counterpart.
 	 */
-	@Override
-	public void onImpact(CollisionVolume volume, CollisionVolume other)
+	public void onImpact(Entity entity, CollisionVolume volume, Entity otherEntity, CollisionVolume otherVolume)
 	{
 		if (spatialComponent != null && velocityComponent != null)
 		{
@@ -48,37 +51,75 @@ public class BounceComponent extends ReactionComponent
 			Vector size = spatialComponent.getSize();
 			Vector velocity = velocityComponent.getVelocity();
 
-			float left = volume.getMaxX() - other.getMinX();
-			float top = volume.getMaxY() - other.getMinY();
-			float right = volume.getMinX() - other.getMaxX();
-			float bottom = volume.getMinY() - other.getMaxY();
+			float depthLeft = volume.getMaxX() - otherVolume.getMinX();
+			float depthRight = volume.getMinX() - otherVolume.getMaxX();
+			float depthTop = volume.getMaxY() - otherVolume.getMinY();
+			float depthBottom = volume.getMinY() - otherVolume.getMaxY();
 
-			OverlapType type = resolveOverlapType(left, top, right, bottom);
+			CollisionType type = resolveCollisionType(depthLeft, depthTop, depthRight, depthBottom);
 
 			switch (type)
 			{
+				// Collision from the left.
 				case LEFT:
-					position.x = other.getMinX() - size.x -  1;
-					velocity.x = Util.invert(velocity.x);
+					Logger.debug(Logger.TAG_CORE, entity.getName() + " collided into " + otherEntity.getName()
+							+ " from the left.");
+					position.x = otherVolume.getMinX() - size.x - 0.5f;
+
+					if (velocity.x > 0.0f)
+					{
+						velocity.x = velocity.x * -1.0f;
+					}
+
 					break;
 
+				// Collision from above.
 				case TOP:
-					position.y = other.getMinY() - size.y - 1;
-					velocity.y = Util.invert(velocity.y);
+					Logger.debug(Logger.TAG_CORE, entity.getName() + " collided into " + otherEntity.getName()
+							+ " from above.");
+					position.y = otherVolume.getMinY() - size.y - 0.5f;
+
+					if (velocity.y > 0.0f)
+					{
+						velocity.y = velocity.y * -1.0f;
+					}
+
 					break;
 
+				// Collision from the right.
 				case RIGHT:
-					position.x = other.getMaxX() + 1;
-					velocity.x = Util.invert(velocity.x);
+					Logger.debug(Logger.TAG_CORE, entity.getName() + " collided into " + otherEntity.getName()
+							+ " from the right.");
+					position.x = otherVolume.getMaxX() + 0.5f;
+
+					if (velocity.x < 0.0f)
+					{
+						velocity.x = velocity.x * -1.0f;
+					}
+
 					break;
 
+				// Collision from below.
 				case BOTTOM:
-					position.y = other.getMaxY() + 1;
-					velocity.y = Util.invert(velocity.y);
+					Logger.debug(Logger.TAG_CORE, entity.getName() + " collided into " + otherEntity.getName()
+							+ " from below.");
+					position.y = otherVolume.getMaxY() + 0.5f;
+
+					if (velocity.y < 0.0f)
+					{
+						velocity.y = velocity.y * -1.0f;
+					}
+
 					break;
 
+				// Unknown direction.
+				case UNKNOWN:
 				default:
 					// This should never happen.
+					Logger.error(Logger.TAG_CORE, entity.getName() + " collision into " + otherEntity.getName()
+							+ " from an unknown direction!");
+
+					// We can safely fall through because nothing will be changed.
 			}
 
 			spatialComponent.setPosition(position);
@@ -86,33 +127,45 @@ public class BounceComponent extends ReactionComponent
 		}
 	}
 
-	private OverlapType resolveOverlapType(float left, float top, float right, float bottom)
+	/**
+	 * Returns the collision type based on the collision depths for the volume being collided into.
+	 * @param depthLeft The collision depth on the left side.
+	 * @param depthTop The collision depth on the top side.
+	 * @param depthRight The collision depth on the right side.
+	 * @param depthBottom The collision depth on the bottom side.
+	 * @return The collision type.
+	 */
+	private CollisionType resolveCollisionType(float depthLeft, float depthTop, float depthRight, float depthBottom)
 	{
-		overlaps.clear();
-		overlaps.add(new Overlap(left, OverlapType.LEFT));
-		overlaps.add(new Overlap(top, OverlapType.TOP));
-		overlaps.add(new Overlap(right, OverlapType.RIGHT));
-		overlaps.add(new Overlap(bottom, OverlapType.BOTTOM));
+		// Create an array for the collision depths to map the values to types.
+		final CollisionDepth[] depths = new CollisionDepth[4];
+		depths[0] = new CollisionDepth(depthLeft, CollisionType.LEFT);
+		depths[1] = new CollisionDepth(depthTop, CollisionType.TOP);
+		depths[2] = new CollisionDepth(depthRight, CollisionType.RIGHT);
+		depths[3] = new CollisionDepth(depthBottom, CollisionType.BOTTOM);
 
-		Overlap overlap = null;
-		for (int i = 0, length = overlaps.size(); i < length; i++)
+		CollisionDepth smallest = null;
+		
+		// Loop through the depths and figure out which one is closest to zero.
+		// The smallest depth equals the collision direction.
+		for (int i = 0, length = depths.length; i < length; i++)
 		{
-			Overlap current = overlaps.get(i);
+			CollisionDepth current = depths[i];
 
-			if (overlap != null)
+			if (smallest != null)
 			{
-				if (Math.abs(current.value) < Math.abs(overlap.value))
+				if (Math.abs(current.value) < Math.abs(smallest.value))
 				{
-					overlap = current;
+					smallest = current;
 				}
 			}
 			else
 			{
-				overlap = current;
+				smallest = current;
 			}
 		}
 
-		return overlap.type;
+		return smallest != null ? smallest.type : CollisionType.UNKNOWN;
 	}
 
 	// -------------------
@@ -133,17 +186,5 @@ public class BounceComponent extends ReactionComponent
 	public void setVelocityComponent(VelocityComponent component)
 	{
 		velocityComponent = component;
-	}
-
-	private class Overlap
-	{
-		public OverlapType type;
-		public float value;
-
-		public Overlap(float value, OverlapType type)
-		{
-			this.value = value;
-			this.type = type;
-		}
 	}
 }

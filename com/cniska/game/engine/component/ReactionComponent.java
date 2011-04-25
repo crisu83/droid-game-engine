@@ -1,6 +1,7 @@
 package com.cniska.game.engine.component;
 
 import com.cniska.game.engine.collision.CollisionVolume;
+import com.cniska.game.engine.entity.Entity;
 
 /**
  * @author Christoffer Niska <ChristofferNiska@gmail.com>
@@ -8,8 +9,9 @@ import com.cniska.game.engine.collision.CollisionVolume;
  */
 public abstract class ReactionComponent extends BaseComponent
 {
-	public enum OverlapType
+	public enum CollisionType
 	{
+		UNKNOWN,
 		LEFT,
 		TOP,
 		RIGHT,
@@ -48,8 +50,31 @@ public abstract class ReactionComponent extends BaseComponent
 
 	/**
 	 * Actions to be taken when a collision occurs.
+	 * @param entity The colliding entity.
 	 * @param volume The collision volume.
-	 * @param other The counterpart collision volume.
+	 * @param otherEntity The counterpart entity.
+	 * @param otherVolume The collision volume for the counterpart.
 	 */
-	 public abstract void onImpact(CollisionVolume volume, CollisionVolume other);
+	 public abstract void onImpact(Entity entity, CollisionVolume volume,
+	                               Entity otherEntity, CollisionVolume otherVolume);
+
+	// -------------
+	// Inner classes
+	// -------------
+
+	/**
+	 * Collision depth class.
+	 * This class represents a collision depth on a specific side of the volume being collided into.
+	 */
+	protected class CollisionDepth
+	{
+		public CollisionType type;
+		public float value;
+
+		public CollisionDepth(float value, CollisionType type)
+		{
+			this.value = value;
+			this.type = type;
+		}
+	}
 }

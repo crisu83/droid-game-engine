@@ -1,10 +1,11 @@
 package com.cniska.game.engine;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import com.cniska.game.engine.base.BaseCollection;
-import com.cniska.game.engine.entity.EntityManager;
+import com.cniska.game.engine.debug.Logger;
 import com.cniska.game.engine.system.CollisionSystem;
 import com.cniska.game.engine.system.RenderSystem;
 import com.cniska.game.engine.system.SystemRegistry;
@@ -43,6 +44,8 @@ public abstract class Game extends SurfaceView implements SurfaceHolder.Callback
 	{
 		super(context);
 
+		Logger.info(Logger.TAG_CORE, "Creating game.");
+
 		GameParams params = new GameParams();
 		params.context = context;
 		params.gameWidth = gameWidth;
@@ -59,11 +62,13 @@ public abstract class Game extends SurfaceView implements SurfaceHolder.Callback
 
 		RenderSystem renderSystem = RenderSystem.getInstance();
 		SystemRegistry.addSystem(renderSystem);
+		Logger.info(Logger.TAG_CORE, "Added rendering system to system regristy.");
 
 		// Create the collision system.
 
 		CollisionSystem collisionSystem = CollisionSystem.getInstance();
 		SystemRegistry.addSystem(collisionSystem);
+		Logger.info(Logger.TAG_CORE, "Added collision system to system regristy.");
 		gameRoot.add(collisionSystem);
 
 		init();
@@ -78,10 +83,16 @@ public abstract class Game extends SurfaceView implements SurfaceHolder.Callback
 		{
 			Runtime r = Runtime.getRuntime();
 			r.gc(); // Run garbage collection
+			
+			Logger.info(Logger.TAG_CORE, "Starting the game.");
 			game = new Thread(gameThread);
 			game.setName("Game");
 			game.start();
 			running = true;
+		}
+		else
+		{
+			Logger.warn(Logger.TAG_CORE, "Trying to start the game while it is already running!");
 		}
 	}
 
@@ -92,9 +103,14 @@ public abstract class Game extends SurfaceView implements SurfaceHolder.Callback
 	{
 		if (running)
 		{
+			Logger.info(Logger.TAG_CORE, "Stopping the game.");
 			gameThread.stopGame();
 			game = null;
 			running = false;
+		}
+		else
+		{
+			Logger.warn(Logger.TAG_CORE, "Trying to stop the game while it is not running!");
 		}
 	}
 
@@ -105,7 +121,12 @@ public abstract class Game extends SurfaceView implements SurfaceHolder.Callback
 	{
 		if (running)
 		{
+			Logger.info(Logger.TAG_CORE, "Pausing the game.");
 			gameThread.pauseGame();
+		}
+		else
+		{
+			Logger.warn(Logger.TAG_CORE, "Trying to pause the game while it is not running!");
 		}
 	}
 
@@ -116,7 +137,12 @@ public abstract class Game extends SurfaceView implements SurfaceHolder.Callback
 	{
 		if (running)
 		{
+			Logger.info(Logger.TAG_CORE, "Resuming the game.");
 			gameThread.resumeGame();
+		}
+		else
+		{
+			Logger.warn(Logger.TAG_CORE, "Trying to resume the game while it is not running!");
 		}
 	}
 
@@ -131,6 +157,7 @@ public abstract class Game extends SurfaceView implements SurfaceHolder.Callback
 	@Override
 	public void surfaceCreated(SurfaceHolder holder)
 	{
+		Logger.info(Logger.TAG_CORE, "Surface created.");
 		start();
 	}
 
@@ -144,6 +171,7 @@ public abstract class Game extends SurfaceView implements SurfaceHolder.Callback
 	@Override
 	public void surfaceChanged(SurfaceHolder holder, int format, int width, int height)
 	{
+		Logger.info(Logger.TAG_CORE, "Surface changed.");
 	}
 
 	/**
@@ -153,6 +181,7 @@ public abstract class Game extends SurfaceView implements SurfaceHolder.Callback
 	@Override
 	public void surfaceDestroyed(SurfaceHolder holder)
 	{
+		Logger.info(Logger.TAG_CORE, "Surface destroyed.");
 		stop();
 	}
 

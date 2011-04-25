@@ -55,7 +55,7 @@ public class Main extends Activity
 		super.onDestroy();
 	}
 
-	protected void onPaused()
+	protected void onPause()
 	{
 		super.onPause();
 		game.onPause();

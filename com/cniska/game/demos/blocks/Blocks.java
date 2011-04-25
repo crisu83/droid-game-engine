@@ -1,12 +1,11 @@
 package com.cniska.game.demos.blocks;
 
 import android.content.Context;
-import android.graphics.BitmapFactory;
-import com.cniska.game.blocks.R;
 import com.cniska.game.engine.Game;
 import com.cniska.game.engine.base.BaseCollection;
 import com.cniska.game.engine.entity.Entity;
 import com.cniska.game.engine.entity.EntityManager;
+import com.cniska.game.demos.blocks.EntityFactory.EntityType;
 
 /**
  * Blocks class file.
@@ -42,12 +41,10 @@ public class Blocks extends Game
 		EntityManager em = new EntityManager();
 		gameRoot.add(em);
 
-		block = EntityFactory.createBlock("VIOLET", BitmapFactory.decodeResource(
-				getResources(), R.drawable.violet_block));
-		block2 = EntityFactory.createBlock("TEAL", BitmapFactory.decodeResource(
-				getResources(), R.drawable.teal_block));
-		block3 = EntityFactory.createBlock("YELLOW", BitmapFactory.decodeResource(
-				getResources(), R.drawable.yellow_block));
+		block = EntityFactory.factory(EntityType.TEAL_BLOCK, 0, 0);
+		block2 = EntityFactory.factory(EntityType.VIOLET_BLOCK, 0, 0);
+		block3 = EntityFactory.factory(EntityType.YELLOW_BLOCK, 0, 0);
+
 		em.addEntity(block);
 		em.addEntity(block2);
 		em.addEntity(block3);

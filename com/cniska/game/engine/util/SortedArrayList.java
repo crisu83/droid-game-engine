@@ -1,5 +1,9 @@
 package com.cniska.game.engine.util;
 
+import com.cniska.game.engine.Template;
+import com.cniska.game.engine.base.Base;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -10,7 +14,7 @@ import java.util.Comparator;
  * @author Christoffer Niska <ChristofferNiska@gmail.com>
  * @license New BSD License http://www.opensource.org/licenses/bsd-license.php
  */
-public class SortedArrayList<E> extends ArrayList<E>
+public class SortedArrayList<E extends Base> extends ArrayList<E>
 {
 	// ----------
 	// Properties
@@ -32,6 +36,15 @@ public class SortedArrayList<E> extends ArrayList<E>
 	}
 
 	/**
+	 * Creates the array with a predefined size.
+	 * @param capacity the size of the array.
+	 */
+	public SortedArrayList(int capacity)
+	{
+		super(capacity);
+	}
+
+	/**
 	 * Sorts this array.
 	 */
 	// TODO: Use another algorithm for sorting to improve performance.
@@ -41,6 +54,7 @@ public class SortedArrayList<E> extends ArrayList<E>
 		{
 			if (comparator != null)
 			{
+				//noinspection unchecked
 				Arrays.sort(toArray(), comparator);
 			}
 			else

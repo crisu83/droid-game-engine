@@ -17,8 +17,8 @@ public class Entity extends Base
 	// Properties
 	// ----------
 
-	private StatefulCollection components;
 	private String name;
+	private StatefulCollection components;
 
 	// -------
 	// Methods
@@ -52,13 +52,20 @@ public class Entity extends Base
 	{
 		components.applyChanges();
 
-		SortedArrayList<Base> objects = components.getObjects();
+		final int componentsCount = components.getSize();
 
-		for (Base object : objects)
+		if (componentsCount > 0)
 		{
-			if (((BaseComponent) object).getActive())
+			SortedArrayList<Base> objects = components.getObjects();
+			
+			for (int i = 0; i < componentsCount; i++)
 			{
-				object.update(this);
+				BaseComponent component = (BaseComponent) objects.get(i);
+
+				if (component.getActive())
+				{
+					component.update(this);
+				}
 			}
 		}
 	}
@@ -80,5 +87,25 @@ public class Entity extends Base
 	public void removeComponent(BaseComponent component)
 	{
 		components.remove(component);
+	}
+
+	// -------------------
+	// Getters and setters
+	// -------------------
+
+	/**
+	 * @return The name of this entity.
+	 */
+	public String getName()
+	{
+		return name;
+	}
+
+	/**
+	 * @return The components that belong to this entity.
+	 */
+	public StatefulCollection getComponents()
+	{
+		return components;
 	}
 }
