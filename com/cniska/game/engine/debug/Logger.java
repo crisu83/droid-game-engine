@@ -83,7 +83,7 @@ public final class Logger
 	 */
 	public static int info(String tag, String msg)
 	{
-		return logging ? Log.d(tag, msg) : 0;
+		return logging ? Log.i(tag, msg) : 0;
 	}
 
 	/**
@@ -94,7 +94,7 @@ public final class Logger
 	 */
 	public static int info(String tag, String msg, Throwable tr)
 	{
-		return logging ? Log.d(tag, msg, tr) : 0;
+		return logging ? Log.i(tag, msg, tr) : 0;
 	}
 
 	/**

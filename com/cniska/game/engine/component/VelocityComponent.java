@@ -15,6 +15,7 @@ public class VelocityComponent extends BaseComponent
 	// Properties
 	// ----------
 
+	private static final Vector zeroVelocity = new Vector(0.0f, 0.0f);
 	private Vector velocity;
 	private SpatialComponent positionComponent;
 
@@ -28,7 +29,7 @@ public class VelocityComponent extends BaseComponent
 	public VelocityComponent()
 	{
 		super();
-		velocity = new Vector();
+		velocity = new Vector(zeroVelocity);
 		reset();
 		setState(ComponentState.MOVEMENT.ordinal());
 	}
@@ -43,7 +44,7 @@ public class VelocityComponent extends BaseComponent
 	@Override
 	public void reset()
 	{
-		velocity.reset();
+		velocity.set(zeroVelocity);
 		positionComponent = null;
 	}
 

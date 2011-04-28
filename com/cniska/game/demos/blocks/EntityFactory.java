@@ -2,8 +2,8 @@ package com.cniska.game.demos.blocks;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import com.cniska.game.demos.blocks.component.BlockComponent;
-import com.cniska.game.engine.GameParams;
+import com.cniska.game.demos.blocks.component.VanishComponent;
+import com.cniska.game.engine.component.BoundaryComponent;
 import com.cniska.game.engine.component.*;
 import com.cniska.game.engine.entity.Entity;
 import com.cniska.game.engine.system.SystemRegistry;
@@ -18,6 +18,7 @@ public class EntityFactory
 {
 	public enum EntityType
 	{
+		GREY_BLOCK,
 		TEAL_BLOCK,
 		VIOLET_BLOCK,
 		YELLOW_BLOCK,
@@ -29,44 +30,55 @@ public class EntityFactory
 
 		switch (type)
 		{
+			case GREY_BLOCK:
+				entity = createGreyBlock(x, y);
+				break;
+
 			case TEAL_BLOCK:
-				entity = createTealBlock();
+				entity = createTealBlock(x, y);
 				break;
 
 			case VIOLET_BLOCK:
-				entity = createVioletBlock();
+				entity = createVioletBlock(x, y);
 				break;
 
 			case YELLOW_BLOCK:
-				entity = createYellowBlock();
+				entity = createYellowBlock(x, y);
 				break;
 		}
 
 		return entity;
 	}
 
-	private static Entity createTealBlock()
+	private static Entity createGreyBlock(float x, float y)
+	{
+		Bitmap bitmap = BitmapFactory.decodeResource(
+				SystemRegistry.params.context.getResources(), R.drawable.grey_block);
+		return createGravityBlock(bitmap, x, y);
+	}
+
+	private static Entity createTealBlock(float x, float y)
 	{
 		Bitmap bitmap = BitmapFactory.decodeResource(
 				SystemRegistry.params.context.getResources(), R.drawable.teal_block);
-		return createBlock("TEAL", bitmap);
+		return createMovingBlock("TEAL", bitmap, x, y);
 	}
 
-	private static Entity createVioletBlock()
+	private static Entity createVioletBlock(float x, float y)
 	{
 		Bitmap bitmap = BitmapFactory.decodeResource( 
 				SystemRegistry.params.context.getResources(), R.drawable.violet_block);
-		return createBlock("VIOLET", bitmap);
+		return createMovingBlock("VIOLET", bitmap, x, y);
 	}
 
-	private static Entity createYellowBlock()
+	private static Entity createYellowBlock(float x, float y)
 	{
 		Bitmap bitmap = BitmapFactory.decodeResource(
 				SystemRegistry.params.context.getResources(), R.drawable.yellow_block);
-		return createBlock("YELLOW", bitmap);
+		return createMovingBlock("YELLOW", bitmap, x, y);
 	}
 
-	private static Entity createBlock(String name, Bitmap bitmap)
+	private static Entity createMovingBlock(String name, Bitmap bitmap, float x, float y)
 	{
 		Random rand = new Random();
 
@@ -76,15 +88,30 @@ public class EntityFactory
 		spriteComponent.setBitmap(bitmap);
 		block.addComponent(spriteComponent);
 
+		x = x > 0.0f ? x : (float) rand.nextInt(449);
+		y = y > 0.0f ? y : (float) rand.nextInt(289);
+
 		SpatialComponent spatialComponent = new SpatialComponent();
-		spatialComponent.setPosition((float) rand.nextInt(449), (float) rand.nextInt(289));
+		spatialComponent.setPosition(x, y);
 		spatialComponent.setSize(spriteComponent.getSize());
 		block.addComponent(spatialComponent);
 
+		float vx = (float) rand.nextInt(5) + 1;
+		float vy = (float) rand.nextInt(5) + 1;
+
+		vx = rand.nextBoolean() ? vx : -vx;
+		vy = rand.nextBoolean() ? vy : -vy;
+
 		VelocityComponent velocityComponent = new VelocityComponent();
 		velocityComponent.setPositionComponent(spatialComponent);
-		velocityComponent.setVelocity((float) rand.nextInt(3) + 1, (float) rand.nextInt(3) + 1);
+		velocityComponent.setVelocity(vx, vy);
 		block.addComponent(velocityComponent);
+
+		BoundaryComponent boundaryComponent = new BoundaryComponent();
+		boundaryComponent.setSpatialComponent(spatialComponent);
+		boundaryComponent.setSpriteComponent(spriteComponent);
+		boundaryComponent.setVelocityComponent(velocityComponent);
+		block.addComponent(boundaryComponent);
 
 		BounceComponent reactionComponent = new BounceComponent();
 		reactionComponent.setSpatialComponent(spatialComponent);
@@ -101,11 +128,47 @@ public class EntityFactory
 		renderComponent.setSpriteComponent(spriteComponent);
 		block.addComponent(renderComponent);
 
-		BlockComponent blockComponent = new BlockComponent();
-		blockComponent.setSpatialComponent(spatialComponent);
-		blockComponent.setSpriteComponent(spriteComponent);
-		blockComponent.setVelocityComponent(velocityComponent);
-		block.addComponent(blockComponent);
+		return block;
+	}
+
+	private static Entity createGravityBlock(Bitmap bitmap, float x, float y)
+	{
+		Entity block = new Entity("GREY");
+
+		SpriteComponent spriteComponent = new SpriteComponent();
+		spriteComponent.setBitmap(bitmap);
+		block.addComponent(spriteComponent);
+
+		SpatialComponent spatialComponent = new SpatialComponent();
+		spatialComponent.setPosition(x, y);
+		spatialComponent.setSize(spriteComponent.getSize());
+		block.addComponent(spatialComponent);
+
+		VelocityComponent velocityComponent = new VelocityComponent();
+		velocityComponent.setPositionComponent(spatialComponent);
+		block.addComponent(velocityComponent);
+
+		GravityComponent gravityComponent = new GravityComponent();
+		gravityComponent.setSpatialComponent(spatialComponent);
+		gravityComponent.setVelocityComponent(velocityComponent);
+		block.addComponent(gravityComponent);
+
+		BoundaryComponent boundaryComponent = new BoundaryComponent();
+		boundaryComponent.setSpatialComponent(spatialComponent);
+		boundaryComponent.setSpriteComponent(spriteComponent);
+		block.addComponent(boundaryComponent);
+
+		CollisionComponent collisionComponent = new CollisionComponent();
+		collisionComponent.setSpatialComponent(spatialComponent);
+		block.addComponent(collisionComponent);
+
+		RenderComponent renderComponent = new RenderComponent();
+		renderComponent.setSpartialComponent(spatialComponent);
+		renderComponent.setSpriteComponent(spriteComponent);
+		block.addComponent(renderComponent);
+
+		VanishComponent vanishComponent = new VanishComponent();
+		block.addComponent(vanishComponent);
 
 		return block;
 	}

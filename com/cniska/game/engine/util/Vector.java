@@ -28,6 +28,16 @@ public class Vector
 	}
 
 	/**
+	 * Creates the vector.
+	 * @param vector The vector.
+	 */
+	public Vector(Vector vector)
+	{
+		this();
+		set(vector);
+	}
+
+	/**
 	 * Creates the vector
 	 * @param x The x-coordinate.
 	 * @param y The y-coordinate.
@@ -82,8 +92,8 @@ public class Vector
 	 */
 	public void reset()
 	{
-		x = 0;
-		y = 0;
+		x = 0.0f;
+		y = 0.0f;
 	}
 
 	// -------------------
@@ -99,5 +109,15 @@ public class Vector
 	{
 		this.x = x;
 		this.y = y;
+	}
+
+	/**
+	 * Sets the coordinate for this vector.
+	 * @param vector The new vector.
+	 */
+	public void set(Vector vector)
+	{
+		this.x = vector.x;
+		this.y = vector.y;
 	}
 }

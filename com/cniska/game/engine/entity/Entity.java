@@ -11,7 +11,7 @@ import com.cniska.game.engine.util.SortedArrayList;
  * @author Christoffer Niska <ChristofferNiska@gmail.com>
  * @license New BSD License http://www.opensource.org/licenses/bsd-license.php
  */
-public class Entity extends Base
+public final class Entity extends Base
 {
 	// ----------
 	// Properties
@@ -19,6 +19,7 @@ public class Entity extends Base
 
 	private String name;
 	private StatefulCollection components;
+	private boolean removed = false;
 
 	// -------
 	// Methods
@@ -41,6 +42,7 @@ public class Entity extends Base
 	public void reset()
 	{
 		components.reset();
+		removed = false;
 	}
 
 	/**
@@ -107,5 +109,15 @@ public class Entity extends Base
 	public StatefulCollection getComponents()
 	{
 		return components;
+	}
+
+	public void setRemoved(boolean removed)
+	{
+		this.removed = removed;
+	}
+
+	public boolean getRemoved()
+	{
+		return removed;
 	}
 }

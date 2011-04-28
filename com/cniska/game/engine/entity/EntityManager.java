@@ -2,6 +2,7 @@ package com.cniska.game.engine.entity;
 
 import com.cniska.game.engine.base.Base;
 import com.cniska.game.engine.base.BaseCollection;
+import com.cniska.game.engine.util.SortedArrayList;
 
 /**
  * Entity manager class file.
@@ -10,7 +11,7 @@ import com.cniska.game.engine.base.BaseCollection;
  * @author Christoffer Niska <ChristofferNiska@gmail.com>
  * @license New BSD License http://www.opensource.org/licenses/bsd-license.php
  */
-public class EntityManager extends Base
+public final class EntityManager extends Base
 {
 	// ----------
 	// Properties
@@ -47,6 +48,23 @@ public class EntityManager extends Base
 	@Override
 	public void update(Base parent)
 	{
+		final int entityCount = entities.getSize();
+
+		if (entityCount > 0)
+		{
+			SortedArrayList<Base> objects = entities.getObjects();
+
+			for (int i = 0; i < entityCount; i++)
+			{
+				Entity entity = (Entity) objects.get(i);
+
+				if (entity.getRemoved())
+				{
+					entities.remove(entity);
+				}
+			}
+		}
+
 		entities.update(this);
 	}
 

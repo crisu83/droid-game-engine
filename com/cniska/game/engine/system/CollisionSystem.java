@@ -1,11 +1,14 @@
 package com.cniska.game.engine.system;
 
 import android.graphics.Rect;
-import android.util.Log;
 import com.cniska.game.engine.base.Base;
 import com.cniska.game.engine.collision.CollisionVolume;
 import com.cniska.game.engine.component.ReactionComponent;
 import com.cniska.game.engine.entity.Entity;
+import com.cniska.game.engine.pool.BasePool;
+import com.cniska.game.engine.pool.PoolArray;
+import com.cniska.game.engine.pool.Poolable;
+import com.cniska.game.engine.util.Stack;
 
 import java.util.ArrayList;
 
@@ -21,7 +24,9 @@ public class CollisionSystem extends BaseSystem
 	// Properties
 	// ----------
 
+	private static final int COLLISION_RECORD_POOL_SIZE = 256;
 	private static final CollisionSystem instance = new CollisionSystem();
+	//private CollisionRecordPool recordPool;
 	private ArrayList<CollisionRecord> records;
 
 	// -------
@@ -35,6 +40,7 @@ public class CollisionSystem extends BaseSystem
 	{
 		super();
 		records = new ArrayList<CollisionRecord>();
+		//recordPool = new CollisionRecordPool(COLLISION_RECORD_POOL_SIZE);
 		reset();
 	}
 
@@ -55,6 +61,7 @@ public class CollisionSystem extends BaseSystem
 	 */
 	public void registerForCollision(CollisionVolume volume, Entity entity, ReactionComponent reactionComponent)
 	{
+		//CollisionRecord record = (CollisionRecord) recordPool.allocate();
 		CollisionRecord record = new CollisionRecord();
 		record.volume = volume;
 		record.entity = entity;
@@ -72,6 +79,18 @@ public class CollisionSystem extends BaseSystem
 	@Override
 	public void reset()
 	{
+		/*
+		final int recordCount = records.size();
+
+		if (recordCount > 0)
+		{
+			for (int i = 0; i < recordCount; i++)
+			{
+				recordPool.release(records.get(i));
+			}
+		}
+		*/
+
 		records.clear();
 	}
 
@@ -129,16 +148,53 @@ public class CollisionSystem extends BaseSystem
 	// Inner classes
 	// -------------
 
+	/*
+	private class CollisionRecordPool extends BasePool
+	{
+		public CollisionRecordPool(int size)
+		{
+			super(size);
+		}
+
+		public void release(CollisionRecord item)
+		{
+			item.reset();
+			super.release(item);
+		}
+
+		@Override
+		public void fill()
+		{
+			Stack pool = getPool();
+
+			for (int i = 0, size = getSize(); i < size; i++)
+			{
+				pool.push(new CollisionRecord());
+			}
+
+			setPool(pool);
+		}
+	}
+	*/
+
 	/**
 	 * Collision record class.
 	 * This class represents a single record in the collision system.
 	 * Records are used for detemining whether a collision has occured.
 	 */
-	private class CollisionRecord
+	private class CollisionRecord implements Poolable
 	{
 		public Entity entity;
 		public CollisionVolume volume;
 		public ReactionComponent reactionComponent;
 		public boolean valid = true;
+
+		public void reset()
+		{
+			entity = null;
+			volume = null;
+			reactionComponent = null;
+			valid = true;
+		}
 	}
 }

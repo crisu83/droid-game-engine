@@ -48,5 +48,8 @@ public class Blocks extends Game
 		em.addEntity(block);
 		em.addEntity(block2);
 		em.addEntity(block3);
+
+		BlockSpawner blockSpawn = new BlockSpawner();
+		gameRoot.add(blockSpawn);
 	}
 }

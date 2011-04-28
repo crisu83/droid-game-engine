@@ -2,11 +2,17 @@ package com.cniska.game.demos.blocks;
 
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.view.MotionEvent;
 import android.view.Window;
 import android.view.WindowManager;
 import com.cniska.game.engine.Game;
+import com.cniska.game.engine.debug.Logger;
 
 /**
  * Main game activity.
@@ -65,5 +71,10 @@ public class Main extends Activity
 	{
 		super.onResume();
 		game.onResume();
+	}
+
+	public boolean onTouchEvent(MotionEvent event)
+	{
+		return game.onTouchEvent(event);
 	}
 }

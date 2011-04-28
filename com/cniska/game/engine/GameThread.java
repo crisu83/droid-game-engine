@@ -4,6 +4,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Debug;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import com.cniska.game.engine.base.Base;
@@ -91,8 +92,8 @@ public class GameThread implements Runnable
 		Base parent = null; // We have no parent because we're at the root level.
 		long beforeTime, afterTime, timeDiff, sleepTime;
 		long overSleepTime = 0L;
-		int noDelays = 0;
 		long excess = 0L;
+		int noDelays = 0;
 
 		prevStatsTime = gameStartTime;
 		beforeTime = gameStartTime;
@@ -116,7 +117,7 @@ public class GameThread implements Runnable
 					{
 						RenderSystem system = (RenderSystem) SystemRegistry.getSystem(RenderSystem.class);
 						system.drawFrame(canvas);
-						drawStats(canvas);
+						//drawStats(canvas); // Decimal formatting kills to performance.
 						holder.unlockCanvasAndPost(canvas);
 					}
 				}
@@ -166,6 +167,8 @@ public class GameThread implements Runnable
 				framesSkipped += skips;
 
 				saveStats();
+
+				//logStats();
 
 				//Debug.stopMethodTracing();
 			}
@@ -289,6 +292,11 @@ public class GameThread implements Runnable
 			prevStatsTime = timeNow;
 			statsInterval = 0L;
 		}
+	}
+
+	protected void logStats()
+	{
+		Logger.info(Logger.TAG_CORE, "FPS: " + averageFPS + ", UPS: " + averageUPS + ", Skipped: " + framesSkipped);
 	}
 
 	/**

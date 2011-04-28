@@ -1,12 +1,16 @@
 package com.cniska.game.engine;
 
 import android.content.Context;
+import android.os.Build;
+import android.os.Debug;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import com.cniska.game.engine.base.BaseCollection;
 import com.cniska.game.engine.debug.Logger;
 import com.cniska.game.engine.system.CollisionSystem;
+import com.cniska.game.engine.system.InputSystem;
 import com.cniska.game.engine.system.RenderSystem;
 import com.cniska.game.engine.system.SystemRegistry;
 
@@ -62,14 +66,20 @@ public abstract class Game extends SurfaceView implements SurfaceHolder.Callback
 
 		RenderSystem renderSystem = RenderSystem.getInstance();
 		SystemRegistry.addSystem(renderSystem);
-		Logger.info(Logger.TAG_CORE, "Added rendering system to system regristy.");
+		Logger.info(Logger.TAG_CORE, "Added rendering system to the system regristy.");
 
 		// Create the collision system.
 
 		CollisionSystem collisionSystem = CollisionSystem.getInstance();
 		SystemRegistry.addSystem(collisionSystem);
-		Logger.info(Logger.TAG_CORE, "Added collision system to system regristy.");
+		Logger.info(Logger.TAG_CORE, "Added collision system to the system regristy.");
 		gameRoot.add(collisionSystem);
+
+		// Create the input system.
+
+		InputSystem inputSystem = InputSystem.getInstance();
+		SystemRegistry.addSystem(inputSystem);
+		Logger.info(Logger.TAG_CORE, "Added input system to the system registry.");
 
 		init();
 	}
@@ -144,6 +154,22 @@ public abstract class Game extends SurfaceView implements SurfaceHolder.Callback
 		{
 			Logger.warn(Logger.TAG_CORE, "Trying to resume the game while it is not running!");
 		}
+	}
+
+	public boolean onTouchEvent(MotionEvent event)
+	{
+		if (running)
+		{
+			InputSystem system = (InputSystem) SystemRegistry.getSystem(InputSystem.class);
+
+			if (system != null)
+			{
+				system.onTouchEvent(event);
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	// ------------------

@@ -32,6 +32,47 @@ public abstract class ReactionComponent extends BaseComponent
 		setState(ComponentState.AFTER_COLLISION.ordinal());
 	}
 
+	/**
+	 * Returns the collision type based on the collision depths for the volume being collided into.
+	 * @param depthLeft The collision depth on the left side.
+	 * @param depthTop The collision depth on the top side.
+	 * @param depthRight The collision depth on the right side.
+	 * @param depthBottom The collision depth on the bottom side.
+	 * @return The collision type.
+	 */
+	protected CollisionType resolveCollisionType(float depthLeft, float depthTop, float depthRight, float depthBottom)
+	{
+		// Create an array for the collision depths to map the values to types.
+		final CollisionDepth[] depths = new CollisionDepth[4];
+		depths[0] = new CollisionDepth(depthLeft, CollisionType.LEFT);
+		depths[1] = new CollisionDepth(depthTop, CollisionType.TOP);
+		depths[2] = new CollisionDepth(depthRight, CollisionType.RIGHT);
+		depths[3] = new CollisionDepth(depthBottom, CollisionType.BOTTOM);
+
+		CollisionDepth smallest = null;
+
+		// Loop through the depths and figure out which one is closest to zero.
+		// The smallest depth equals the collision direction.
+		for (int i = 0, length = depths.length; i < length; i++)
+		{
+			CollisionDepth current = depths[i];
+
+			if (smallest != null)
+			{
+				if (Math.abs(current.value) < Math.abs(smallest.value))
+				{
+					smallest = current;
+				}
+			}
+			else
+			{
+				smallest = current;
+			}
+		}
+
+		return smallest != null ? smallest.type : CollisionType.UNKNOWN;
+	}
+
 	// ------------------
 	// Overridden methods
 	// ------------------

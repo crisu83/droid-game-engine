@@ -1,4 +1,4 @@
-package com.cniska.game.demos.blocks.component;
+package com.cniska.game.engine.component;
 
 import com.cniska.game.engine.GameParams;
 import com.cniska.game.engine.base.Base;
@@ -13,7 +13,7 @@ import com.cniska.game.engine.util.Vector;
  * @author Christoffer Niska <ChristofferNiska@gmail.com>
  * @license New BSD License http://www.opensource.org/licenses/bsd-license.php
  */
-public class BlockComponent extends BaseComponent
+public class BoundaryComponent extends BaseComponent
 {
 	// ----------
 	// Properties
@@ -31,15 +31,17 @@ public class BlockComponent extends BaseComponent
 	/**
 	 * Creates the component.
 	 */
-	public BlockComponent()
+	public BoundaryComponent()
 	{
+		super();
+		reset();
 		params = SystemRegistry.params;
-		setState(ComponentState.LOGIC.ordinal());
+		setState(ComponentState.COLLISION.ordinal());
 	}
 
-	// ----------------
-	// Abstract methods
-	// ----------------
+	// ------------------
+	// Overridden methods
+	// ------------------
 
 	/**
 	 * Resets the component.
@@ -98,16 +100,25 @@ public class BlockComponent extends BaseComponent
 	// Getters and setters
 	// -------------------
 
+	/**
+	 * @param component The associated spatial component.
+	 */
 	public void setSpatialComponent(SpatialComponent component)
 	{
 		spatialComponent = component;
 	}
 
+	/**
+	 * @param component The associated sprite component.
+	 */
 	public void setSpriteComponent(SpriteComponent component)
 	{
 		spriteComponent = component;
 	}
 
+	/**
+	 * @param component The associated velocity component.
+	 */
 	public void setVelocityComponent(VelocityComponent component)
 	{
 		velocityComponent = component;
