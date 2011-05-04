@@ -1,7 +1,6 @@
 package com.cniska.game.engine.component;
 
-import com.cniska.game.engine.base.Base;
-import com.cniska.game.engine.util.Vector;
+import com.cniska.game.engine.util.Vector2;
 
 /**
  * Spatial component class file.
@@ -15,8 +14,8 @@ public class SpatialComponent extends BaseComponent
 	// Properties
 	// ----------
 
-	private Vector position;
-	private Vector size;
+	private Vector2 position;
+	private Vector2 size;
 
 	// -------
 	// Methods
@@ -28,8 +27,8 @@ public class SpatialComponent extends BaseComponent
 	public SpatialComponent()
 	{
 		super();
-		position = new Vector();
-		size = new Vector();
+		position = new Vector2();
+		size = new Vector2();
 		reset();
 		setState(ComponentState.BEFORE_RENDER.ordinal());
 	}
@@ -44,8 +43,8 @@ public class SpatialComponent extends BaseComponent
 	@Override
 	public void reset()
 	{
-		position.reset();
-		size.reset();
+		position.zero();
+		size.zero();
 	}
 
 	// -------------------
@@ -65,7 +64,7 @@ public class SpatialComponent extends BaseComponent
 	/**
 	 * @param value The position vector.
 	 */
-	public void setPosition(Vector value)
+	public void setPosition(Vector2 value)
 	{
 		position = value;
 	}
@@ -74,7 +73,7 @@ public class SpatialComponent extends BaseComponent
 	 *
 	 * @return The size vector.
 	 */
-	public Vector getPosition()
+	public Vector2 getPosition()
 	{
 		return position;
 	}
@@ -92,7 +91,7 @@ public class SpatialComponent extends BaseComponent
 	/**
 	 * @param value The size vector.
 	 */
-	public void setSize(Vector value)
+	public void setSize(Vector2 value)
 	{
 		size = value;
 	}
@@ -101,7 +100,7 @@ public class SpatialComponent extends BaseComponent
 	 *
 	 * @return The size vector.
 	 */
-	public Vector getSize()
+	public Vector2 getSize()
 	{
 		return size;
 	}

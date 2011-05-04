@@ -1,6 +1,6 @@
 package com.cniska.game.engine.input;
 
-import com.cniska.game.engine.util.Vector;
+import com.cniska.game.engine.util.Vector2;
 
 /**
  * @author Christoffer Niska <ChristofferNiska@gmail.com>
@@ -12,8 +12,8 @@ public class InputTouchPointer extends BaseInput
 	// Properties
 	// ----------
 
-	private Vector initialPosition;
-	private Vector position;
+	private Vector2 initialPosition;
+	private Vector2 position;
 	private boolean moved = false;
 
 	// -------
@@ -25,8 +25,8 @@ public class InputTouchPointer extends BaseInput
 	 */
 	public InputTouchPointer()
 	{
-		initialPosition = new Vector();
-		position = new Vector();
+		initialPosition = new Vector2();
+		position = new Vector2();
 	}
 
 	/**
@@ -34,8 +34,8 @@ public class InputTouchPointer extends BaseInput
 	 */
 	public void reset()
 	{
-		initialPosition.reset();
-		position.reset();
+		initialPosition.zero();
+		position.zero();
 		moved = false;
 		setActive(false);
 	}
@@ -66,7 +66,7 @@ public class InputTouchPointer extends BaseInput
 	/**
 	 * @return The current position of this pointer.
 	 */
-	public Vector getPosition()
+	public Vector2 getPosition()
 	{
 		return position;
 	}

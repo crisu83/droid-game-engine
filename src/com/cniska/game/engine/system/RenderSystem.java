@@ -3,8 +3,7 @@ package com.cniska.game.engine.system;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import com.cniska.game.engine.base.Base;
-import com.cniska.game.engine.util.Vector;
+import com.cniska.game.engine.util.Vector2;
 
 import java.util.ArrayList;
 
@@ -51,7 +50,7 @@ public class RenderSystem extends BaseSystem
 	 * @param bitmap The bitmap to draw.
 	 * @param position The position where the bitmap should be drawn.
 	 */
-	public void queueForDraw(Bitmap bitmap, Vector position)
+	public void queueForDraw(Bitmap bitmap, Vector2 position)
 	{
 		drawQueue.add(new DrawableBitmap(bitmap, position));
 	}
@@ -105,14 +104,14 @@ public class RenderSystem extends BaseSystem
 	private class DrawableBitmap
 	{
 		public Bitmap bitmap;
-		public Vector position;
+		public Vector2 position;
 
 		/**
 		 * Creates the drawable bitmap.
 		 * @param bitmap The bitmap to draw.
 	    * @param position The position where the bitmap should be drawn.
 		 */
-		public DrawableBitmap(Bitmap bitmap, Vector position)
+		public DrawableBitmap(Bitmap bitmap, Vector2 position)
 		{
 			this.bitmap = bitmap;
 			this.position = position;

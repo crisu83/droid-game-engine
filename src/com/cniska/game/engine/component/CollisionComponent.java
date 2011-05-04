@@ -1,12 +1,11 @@
 package com.cniska.game.engine.component;
 
-import android.util.Log;
 import com.cniska.game.engine.base.Base;
 import com.cniska.game.engine.collision.CollisionVolume;
 import com.cniska.game.engine.entity.Entity;
 import com.cniska.game.engine.system.CollisionSystem;
 import com.cniska.game.engine.system.SystemRegistry;
-import com.cniska.game.engine.util.Vector;
+import com.cniska.game.engine.util.Vector2;
 
 /**
  * @author Christoffer Niska <ChristofferNiska@gmail.com>
@@ -61,8 +60,8 @@ public class CollisionComponent extends BaseComponent
 		{
 			if (spatialComponent != null) // we do not require a reaction component
 			{
-				Vector position = spatialComponent.getPosition();
-				Vector size = spatialComponent.getSize();
+				Vector2 position = spatialComponent.getPosition();
+				Vector2 size = spatialComponent.getSize();
 
 				int left = Math.round(position.x);
 				int top = Math.round(position.y);

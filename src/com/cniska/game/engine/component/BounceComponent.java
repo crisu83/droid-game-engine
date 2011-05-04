@@ -1,13 +1,9 @@
 package com.cniska.game.engine.component;
 
-import android.os.Debug;
 import com.cniska.game.engine.collision.CollisionVolume;
 import com.cniska.game.engine.debug.Logger;
 import com.cniska.game.engine.entity.Entity;
-import com.cniska.game.engine.util.Util;
-import com.cniska.game.engine.util.Vector;
-
-import java.util.ArrayList;
+import com.cniska.game.engine.util.Vector2;
 
 /**
  * Bouce component class file.
@@ -47,9 +43,9 @@ public class BounceComponent extends ReactionComponent
 	{
 		if (spatialComponent != null && velocityComponent != null)
 		{
-			Vector position = spatialComponent.getPosition();
-			Vector size = spatialComponent.getSize();
-			Vector velocity = velocityComponent.getVelocity();
+			Vector2 position = spatialComponent.getPosition();
+			Vector2 size = spatialComponent.getSize();
+			Vector2 velocity = velocityComponent.getVelocity();
 
 			float depthLeft = volume.getMaxX() - otherVolume.getMinX();
 			float depthRight = volume.getMinX() - otherVolume.getMaxX();

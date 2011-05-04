@@ -2,12 +2,8 @@ package com.cniska.game.engine.component;
 
 import com.cniska.game.engine.GameParams;
 import com.cniska.game.engine.base.Base;
-import com.cniska.game.engine.component.BaseComponent;
-import com.cniska.game.engine.component.SpatialComponent;
-import com.cniska.game.engine.component.SpriteComponent;
-import com.cniska.game.engine.component.VelocityComponent;
 import com.cniska.game.engine.system.SystemRegistry;
-import com.cniska.game.engine.util.Vector;
+import com.cniska.game.engine.util.Vector2;
 
 /**
  * @author Christoffer Niska <ChristofferNiska@gmail.com>
@@ -63,9 +59,9 @@ public class BoundaryComponent extends BaseComponent
 	{
 		if (spatialComponent != null && spriteComponent != null && velocityComponent != null)
 		{
-			Vector position = spatialComponent.getPosition();
-			Vector size = spatialComponent.getSize();
-			Vector velocity = velocityComponent.getVelocity();
+			Vector2 position = spatialComponent.getPosition();
+			Vector2 size = spatialComponent.getSize();
+			Vector2 velocity = velocityComponent.getVelocity();
 
 			if ((position.x + size.x) >= params.gameWidth)
 			{

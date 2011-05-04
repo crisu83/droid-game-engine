@@ -8,7 +8,7 @@ import com.cniska.game.engine.input.InputTouch;
 import com.cniska.game.engine.input.InputTouchPointer;
 import com.cniska.game.engine.system.InputSystem;
 import com.cniska.game.engine.system.SystemRegistry;
-import com.cniska.game.engine.util.Vector;
+import com.cniska.game.engine.util.Vector2;
 
 /**
  * @author Christoffer Niska <ChristofferNiska@gmail.com>
@@ -47,7 +47,7 @@ public class BlockSpawner extends Base
 
 			if (pointer != null)
 			{
-				Vector position = pointer.getPosition();
+				Vector2 position = pointer.getPosition();
 				Entity touchBlock = EntityFactory.factory(EntityType.GREY_BLOCK, position.x, position.y);
 				entityManager.addEntity(touchBlock);
 			}

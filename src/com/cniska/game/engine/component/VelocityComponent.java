@@ -1,7 +1,7 @@
 package com.cniska.game.engine.component;
 
 import com.cniska.game.engine.base.Base;
-import com.cniska.game.engine.util.Vector;
+import com.cniska.game.engine.util.Vector2;
 
 /**
  * Velocity component class file.
@@ -15,8 +15,8 @@ public class VelocityComponent extends BaseComponent
 	// Properties
 	// ----------
 
-	private static final Vector zeroVelocity = new Vector(0.0f, 0.0f);
-	private Vector velocity;
+	private static final Vector2 zeroVelocity = new Vector2(0.0f, 0.0f);
+	private Vector2 velocity;
 	private SpatialComponent positionComponent;
 
 	// -------
@@ -29,7 +29,7 @@ public class VelocityComponent extends BaseComponent
 	public VelocityComponent()
 	{
 		super();
-		velocity = new Vector(zeroVelocity);
+		velocity = new Vector2(zeroVelocity);
 		reset();
 		setState(ComponentState.MOVEMENT.ordinal());
 	}
@@ -57,7 +57,7 @@ public class VelocityComponent extends BaseComponent
 	{
 		if (positionComponent != null)
 		{
-			Vector position = positionComponent.getPosition();
+			Vector2 position = positionComponent.getPosition();
 			float newX = position.x + velocity.x;
 			float newY = position.y + velocity.y;
 			positionComponent.setPosition(newX, newY);
@@ -81,7 +81,7 @@ public class VelocityComponent extends BaseComponent
 	/**
 	 * @param value The new velocity vector.
 	 */
-	public void setVelocity(Vector value)
+	public void setVelocity(Vector2 value)
 	{
 		velocity = value;
 	}
@@ -89,7 +89,7 @@ public class VelocityComponent extends BaseComponent
 	/**
 	 * @return The velocity vector.
 	 */
-	public Vector getVelocity()
+	public Vector2 getVelocity()
 	{
 		return velocity;
 	}
